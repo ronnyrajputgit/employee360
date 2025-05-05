@@ -1,0 +1,9 @@
+/* gantt-hide.css */
+.gantt-table {
+    display: none !important;
+  }
+  
+  .gantt-container {
+    grid-template-columns: 0fr 1fr !important;
+  }
+  
