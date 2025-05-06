@@ -50,7 +50,7 @@ const routes = [
     type: "collapse",
     name: "Workforce Analytics",
     key: "workforce analytics",
-    icon: <Icon fontSize="small">timeline</Icon>,
+    icon: <Icon fontSize="small">work</Icon>,
     route: "/workforceanalytics",
     component: <WorkforceAnalytics />,
   },

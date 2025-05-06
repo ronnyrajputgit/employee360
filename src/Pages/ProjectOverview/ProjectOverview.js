@@ -36,6 +36,7 @@ import Majormilestone from "./Components/Majormilestone/Majormilestone";
 import ProjectTimeline from "./Components/ProjectTimeline/ProjectTimeline";
 import Taskbreakdown from "./Components/Taskbreakdown/Taskbreakdown";
 import ResourcesUtilizations from "./Components/ResourcesUtilization/ResourcesUtilizations";
+import SharePointData from "./SharePointData";
 
 function ProjectOverview() {
   const [openModal, setOpenModal] = useState({
@@ -74,6 +75,8 @@ function ProjectOverview() {
       <DashboardNavbar />
       <MDBox mb={2} />
       <MDBox mt={5} mb={3}>
+        {/* ttesting sharepoint data */}
+        <SharePointData />
         <Projectsongoing />
         <MDBox py={3}>
           <Grid container spacing={3}>
