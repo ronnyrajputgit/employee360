@@ -1,54 +1,139 @@
-import React from "react";
-import { Box, Card, CardContent, Typography, Grid, Button } from "@mui/material";
+// with filter options
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
+import { taskBreakdownProfilleData } from "apis/sharepointApi";
 
-// Mock Data
-const taskData = [
-  {
-    taskName: "Certificate Migration",
-    project: "DataINFA India Partner Account",
-    dueDate: "Mar 28, 2025",
-    status: "Completed",
-  },
-  {
-    taskName: "CDQ Bundle Requirement",
-    project: "Internal Process",
-    dueDate: "Mar 25, 2025",
-    status: "Completed",
-  },
-  {
-    taskName: "Exception Report Re-design",
-    project: "GE",
-    dueDate: "Apr 10, 2025",
-    status: "In Progress",
-  },
-  {
-    taskName: "Security Audit",
-    project: "Authentication Service",
-    dueDate: "Mar 20, 2025",
-    status: "Completed",
-  },
-];
+// Transform SharePoint data
+const transformSharePointData = (data) => {
+  return data.map((item) => {
+    const fields = item.fields;
+    return {
+      taskName: fields.Title || "Untitled",
+      description: fields.TaskDescription || "No description",
+      duration: (fields.Duration_x0028_inHrs_x0029_ || 0) + " hrs",
+      tasktype: fields.TaskType || "General",
+      project: fields.ProjectType || "Other",
+      customer: fields.Customer || "None",
+      internal: fields.Internal || "None",
+      createdBy: item.createdBy?.user?.displayName || "Unknown",
+    };
+  });
+};
 
 const TasksCompleted = () => {
-  // Calculate summary data
-  const totalTasks = taskData.length;
-  const completedTasks = taskData.filter((task) => task.status === "Completed").length;
-  const inProgressTasks = taskData.filter((task) => task.status === "In Progress").length;
-  const onTimeCompletion = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const [taskData, setTaskData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [projectType, setProjectType] = useState("");
+  // const [customer, setCustomer] = useState("");
+  // const [internal, setInternal] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const rawData = await taskBreakdownProfilleData();
+        console.log(rawData.customer);
+        const transformed = transformSharePointData(rawData);
+        setTaskData(transformed);
+        setFilteredData(transformed);
+      } catch (error) {
+        console.error("Failed to load tasks", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  useEffect(() => {
+    let filtered = [...taskData];
+
+    if (searchName) {
+      filtered = filtered.filter((task) =>
+        task.taskName.toLowerCase().includes(searchName.toLowerCase())
+      );
+    }
+    if (projectType) {
+      filtered = filtered.filter((task) => task.project === projectType);
+    }
+    if (createdBy) {
+      filtered = filtered.filter((task) => task.createdBy === createdBy);
+    }
+
+    setFilteredData(filtered);
+  }, [searchName, projectType, createdBy, taskData]);
+
+  const totalTasks = filteredData.length;
+
+  // Extract distinct filter options
+  const createdByOptions = [...new Set(taskData.map((t) => t.createdBy))];
 
   return (
     <Box sx={{ padding: 3, backgroundColor: "#f0f8ff" }}>
-      {/* Header Section */}
-      <Box sx={{ display: "flex", alignItems: "center", marginBottom: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: "bold", marginRight: 2, color: "#1e90ff" }}>
-          Tasks Completed
-        </Typography>
-      </Box>
+      <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2, color: "#1e90ff" }}>
+        Tasks Completed
+      </Typography>
 
-      {/* Summary Cards */}
+      {/* Filters */}
+      <Grid container spacing={2} mb={3}>
+        <Grid item xs={12} md={3}>
+          <TextField
+            fullWidth
+            label="Search by Name"
+            variant="outlined"
+            size="small"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Project Type</InputLabel>
+            <Select
+              value={projectType}
+              label="Project Type"
+              onChange={(e) => setProjectType(e.target.value)}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Customer">Customer</MenuItem>
+              <MenuItem value="Internal Project">Internal Project</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Created By</InputLabel>
+            <Select
+              value={createdBy}
+              label="Created By"
+              onChange={(e) => setCreatedBy(e.target.value)}
+            >
+              <MenuItem value="">All</MenuItem>
+              {createdByOptions.map((user, i) => (
+                <MenuItem key={i} value={user}>
+                  {user}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      {/* Summary Card */}
       <Grid container spacing={3} mb={3}>
         <Grid item xs={12} sm={4}>
-          <Card sx={{ backgroundColor: "white", boxShadow: 3, borderRadius: 2 }}>
+          <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
             <CardContent sx={{ textAlign: "center" }}>
               <Typography variant="h4" sx={{ color: "#1e90ff", fontWeight: "bold" }}>
                 {totalTasks}
@@ -59,78 +144,56 @@ const TasksCompleted = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ backgroundColor: "white", boxShadow: 3, borderRadius: 2 }}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography variant="h4" sx={{ color: "#1e90ff", fontWeight: "bold" }}>
-                {inProgressTasks}
-              </Typography>
-              <Typography variant="subtitle1" color="textSecondary">
-                In Progress
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ backgroundColor: "white", boxShadow: 3, borderRadius: 2 }}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Typography variant="h4" sx={{ color: "#1e90ff", fontWeight: "bold" }}>
-                {onTimeCompletion}%
-              </Typography>
-              <Typography variant="subtitle1" color="textSecondary">
-                On-Time Completion
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
       </Grid>
 
-      {/* Task List Table */}
-      <Card sx={{ backgroundColor: "white", boxShadow: 3, borderRadius: 2 }}>
+      {/* Task Table */}
+      <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
           <Grid container sx={{ fontWeight: "bold", py: 1, borderBottom: "1px solid #e0e0e0" }}>
-            <Grid item xs={3} sx={{ color: "#1e90ff" }}>
+            <Grid item xs={2} sx={{ color: "#1e90ff" }}>
               Task Name
             </Grid>
             <Grid item xs={3} sx={{ color: "#1e90ff" }}>
+              Description
+            </Grid>
+            <Grid item xs={2} sx={{ color: "#1e90ff" }}>
               Project
             </Grid>
-            <Grid item xs={3} sx={{ color: "#1e90ff" }}>
-              Due Date
+            <Grid item xs={2} sx={{ color: "#1e90ff" }}>
+              Type
             </Grid>
-            <Grid item xs={3} sx={{ color: "#1e90ff" }}>
-              Status
+            <Grid item xs={2} sx={{ color: "#1e90ff" }}>
+              Duration
             </Grid>
+            {/* <Grid item xs={1} sx={{ color: "#1e90ff" }}>
+              Created By
+            </Grid> */}
           </Grid>
 
-          {/* Mapped Task Items */}
-          {taskData.map((task, index) => (
+          {filteredData.map((task, index) => (
             <Grid
               container
               key={index}
               sx={{ py: 1, borderBottom: "1px solid #e0e0e0", alignItems: "center" }}
             >
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 {task.taskName}
               </Grid>
               <Grid item xs={3}>
+                {task.description}
+              </Grid>
+              <Grid item xs={2}>
                 {task.project}
               </Grid>
-              <Grid item xs={3}>
-                {task.dueDate}
+              <Grid item xs={2}>
+                {task.tasktype}
               </Grid>
-              <Grid item xs={3}>
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{
-                    backgroundColor: task.status === "Completed" ? "#4caf50" : "#ff9800",
-                    color: "white",
-                  }}
-                >
-                  {task.status}
-                </Button>
+              <Grid item xs={2}>
+                {task.duration}
               </Grid>
+              {/* <Grid item xs={1}>
+                {task.createdBy}
+              </Grid> */}
             </Grid>
           ))}
         </CardContent>
@@ -140,6 +203,130 @@ const TasksCompleted = () => {
 };
 
 export default TasksCompleted;
+
+// import React, { useEffect, useState } from "react";
+// import { Box, Card, CardContent, Typography, Grid, Button } from "@mui/material";
+// import { taskBreakdownProfilleData } from "apis/sharepointApi";
+
+// // Status color helper
+
+// // Transform SharePoint data
+// const transformSharePointData = (data) => {
+//   const grouped = [];
+
+//   data.forEach((item) => {
+//     const fields = item.fields;
+//     grouped.push({
+//       taskName: fields.Title || "Untitled",
+//       // status: fields.Status || "Not Started",
+//       description: fields.TaskDescription || "No description",
+//       duration: fields.Duration_x0028_inHrs_x0029_ + " hrs",
+//       tasktype: fields.TaskType || "General",
+//       project: fields.ProjectType,
+//       // stakeholder: item.createdBy.user.displayName,
+//     });
+//   });
+
+//   return grouped;
+// };
+
+// const TasksCompleted = () => {
+//   const [taskData, setTaskData] = useState([]);
+
+//   useEffect(() => {
+//     const fetchTasks = async () => {
+//       try {
+//         const rawData = await taskBreakdownProfilleData();
+//         const transformed = transformSharePointData(rawData);
+//         setTaskData(transformed);
+//       } catch (error) {
+//         console.error("Failed to load tasks", error);
+//       }
+//     };
+
+//     fetchTasks();
+//   }, []);
+
+//   const totalTasks = taskData.length;
+//   const completedTasks = taskData.filter((task) => task.status === "Completed").length;
+//   const inProgressTasks = taskData.filter((task) => task.status === "In Progress").length;
+//   const onTimeCompletion = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+//   return (
+//     <Box sx={{ padding: 3, backgroundColor: "#f0f8ff" }}>
+//       <Box sx={{ display: "flex", alignItems: "center", marginBottom: 3 }}>
+//         <Typography variant="h5" sx={{ fontWeight: "bold", marginRight: 2, color: "#1e90ff" }}>
+//           Tasks Completed
+//         </Typography>
+//       </Box>
+
+//       {/* Summary Cards */}
+//       <Grid container spacing={3} mb={3}>
+//         <Grid item xs={12} sm={4}>
+//           <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
+//             <CardContent sx={{ textAlign: "center" }}>
+//               <Typography variant="h4" sx={{ color: "#1e90ff", fontWeight: "bold" }}>
+//                 {totalTasks}
+//               </Typography>
+//               <Typography variant="subtitle1" color="textSecondary">
+//                 Tasks
+//               </Typography>
+//             </CardContent>
+//           </Card>
+//         </Grid>
+//       </Grid>
+
+//       {/* Task List Table */}
+//       <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
+//         <CardContent>
+//           <Grid container sx={{ fontWeight: "bold", py: 1, borderBottom: "1px solid #e0e0e0" }}>
+//             <Grid item xs={2} sx={{ color: "#1e90ff" }}>
+//               Task Name
+//             </Grid>
+//             <Grid item xs={4} sx={{ color: "#1e90ff" }}>
+//               Description
+//             </Grid>
+//             <Grid item xs={2} sx={{ color: "#1e90ff" }}>
+//               Project
+//             </Grid>
+//             <Grid item xs={2} sx={{ color: "#1e90ff" }}>
+//               Type
+//             </Grid>
+//             <Grid item xs={2} sx={{ color: "#1e90ff" }}>
+//               Duration
+//             </Grid>
+//           </Grid>
+
+//           {taskData.map((task, index) => (
+//             <Grid
+//               container
+//               key={index}
+//               sx={{ py: 1, borderBottom: "1px solid #e0e0e0", alignItems: "center" }}
+//             >
+//               <Grid item xs={2}>
+//                 {task.taskName}
+//               </Grid>
+//               <Grid item xs={4}>
+//                 {task.description}
+//               </Grid>
+//               <Grid item xs={2}>
+//                 {task.project}
+//               </Grid>
+//               <Grid item xs={2}>
+//                 {task.tasktype}
+//               </Grid>
+//               <Grid item xs={2}>
+//                 {task.duration}
+//               </Grid>
+//             </Grid>
+//           ))}
+//         </CardContent>
+//       </Card>
+//     </Box>
+//   );
+// };
+
+// export default TasksCompleted;
 
 // import React, { useState } from "react";
 // import {

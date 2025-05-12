@@ -36,7 +36,6 @@ import Majormilestone from "./Components/Majormilestone/Majormilestone";
 import ProjectTimeline from "./Components/ProjectTimeline/ProjectTimeline";
 import Taskbreakdown from "./Components/Taskbreakdown/Taskbreakdown";
 import ResourcesUtilizations from "./Components/ResourcesUtilization/ResourcesUtilizations";
-import SharePointData from "./SharePointData";
 
 function ProjectOverview() {
   const [openModal, setOpenModal] = useState({
@@ -66,17 +65,11 @@ function ProjectOverview() {
     p: 6,
   };
 
-  // const TimelineContent = () => <div>Timeline content will go here</div>;
-
-  const TaskBreakdownContent = () => <div>Task breakdown content will go here</div>;
-
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox mb={2} />
       <MDBox mt={5} mb={3}>
-        {/* ttesting sharepoint data */}
-        <SharePointData />
         <Projectsongoing />
         <MDBox py={3}>
           <Grid container spacing={3}>
@@ -233,9 +226,6 @@ function ProjectOverview() {
                       Task Breakdown by Resources
                     </MDTypography>
                   </div>
-                  <Stack direction="row" spacing={1}>
-                    <Chip label="All" variant="outlined" />
-                  </Stack>
                   <IconButton color="white" onClick={() => handleOpen("taskBreakdown")}>
                     <Fullscreen />
                   </IconButton>
