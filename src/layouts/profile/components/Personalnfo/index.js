@@ -1,9 +1,23 @@
 import { Avatar, Card, Grid, Icon } from "@mui/material";
+import { getUserProfile } from "auth/getUserProfile";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const PersonalInfo = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profile = await getUserProfile();
+      // console.log("profile", profile);
+      setUser(profile);
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (!user) return <center>Loading profile...</center>;
   return (
     <div>
       <Grid container spacing={2}>
@@ -19,24 +33,24 @@ const PersonalInfo = () => {
               height="100%"
             >
               <Avatar
-                src="your-image-url.jpg"
+                src={user ? user.photo : "n/a"}
                 alt="profile"
                 sx={{ width: 100, height: 100, mb: 2 }}
               />
               <MDTypography variant="h5" fontWeight="medium">
-                Aravvindhan V S
+                {user ? user.name : "n/a"}
               </MDTypography>
               <MDTypography variant="button" color="info" fontWeight="regular">
-                Technical Lead
+                {user ? user.jobTitle : "n/a"}
               </MDTypography>
               <MDTypography variant="body2" color="text" mt={1}>
                 <Icon sx={{ verticalAlign: "middle", mr: 1 }}>email</Icon>
-                aravvindhan.vs@datainfa.com
+                {user.email}
               </MDTypography>
-              <MDTypography variant="body2" color="text" mt={1}>
+              {/* <MDTypography variant="body2" color="text" mt={1}>
                 <Icon sx={{ verticalAlign: "middle", mr: 1 }}>linkedin</Icon>
-                aravvindhan.vs@datainfa.com
-              </MDTypography>
+                n/a
+              </MDTypography> */}
             </MDBox>
           </Card>
         </Grid>
@@ -60,7 +74,7 @@ const PersonalInfo = () => {
                     Employee ID:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
-                    00064
+                    {user ? user.employeeId : "n/a"}
                   </MDTypography>
                 </Grid>
                 <Grid item xs={6}>
@@ -68,7 +82,7 @@ const PersonalInfo = () => {
                     Department:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
-                    Consulting Services
+                    {user ? user.department : "n/a"}
                   </MDTypography>
                 </Grid>
                 <Grid item xs={6}>
@@ -76,7 +90,7 @@ const PersonalInfo = () => {
                     Joining Date:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
-                    22 Jan 2024
+                    {user ? user.joiningDate : "n/a"}
                   </MDTypography>
                 </Grid>
                 <Grid item xs={6}>
@@ -84,7 +98,7 @@ const PersonalInfo = () => {
                     Location:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
-                    Bengaluru
+                    {user ? user.location : "n/a"}
                   </MDTypography>
                 </Grid>
                 <Grid item xs={6}>
@@ -92,7 +106,7 @@ const PersonalInfo = () => {
                     Phone:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
-                    +91 9791975891
+                    {user ? user.phone : "n/a"}
                   </MDTypography>
                 </Grid>
                 <Grid item xs={6}>
@@ -100,7 +114,7 @@ const PersonalInfo = () => {
                     Status:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium" color="success">
-                    ● Active
+                    {user ? user.status : "n/a"}
                   </MDTypography>
                 </Grid>
               </Grid>
