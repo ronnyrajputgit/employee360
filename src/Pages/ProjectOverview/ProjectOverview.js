@@ -287,12 +287,6 @@ function ProjectOverview() {
                     <MDTypography variant="h6" color="white">
                       Resource Utilization
                     </MDTypography>
-                    {/* add here chip  */}
-                    <Stack direction="row" spacing={1}>
-                      <Chip label="Month" variant="outlined" />
-                      <Chip label="Quarter" variant="outlined" />
-                      <Chip label="Project" variant="outlined" />
-                    </Stack>
                   </div>
                   <IconButton color="white" onClick={() => handleOpen("timeline")}>
                     <Fullscreen />

@@ -11,22 +11,12 @@ import {
   FormControl,
   InputLabel,
   Stack,
+  Card,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { taskBreakdownProfilleData } from "apis/sharepointApi";
-
-const getStatusColor = (status) => {
-  switch (status) {
-    case "Completed":
-      return "success";
-    case "In Progress":
-      return "warning";
-    case "Not Started":
-      return "default";
-    default:
-      return "primary";
-  }
-};
+import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
 
 const transformSharePointData = (data) => {
   const grouped = {};
@@ -118,205 +108,197 @@ const TaskbreakDown = () => {
   const filteredRoles = roles.map(filterTasks).filter((role) => role.tasks.length > 0);
 
   return (
-    <Box p={{ xs: 1, sm: 2 }}>
-      <Paper
-        elevation={3}
-        sx={{
-          p: { xs: 1, sm: 2 },
-          mb: 2,
-          backgroundColor: "#fffff",
-        }}
-      >
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-          <Box
-            component="form"
+    <>
+      <Grid item xs={12} lg={12}>
+        <Card>
+          <MDBox p={2}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6} lg={4}>
+                <TextField
+                  size="small"
+                  label="Search tasks"
+                  variant="standard"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  fullWidth
+                />
+                {/* <MDButton variant="gradient" color="success" fullWidth>
+                  Weekly
+                </MDButton> */}
+              </Grid>
+              <Grid item xs={12} sm={6} lg={4}>
+                <TextField
+                  select
+                  size="small"
+                  label="Task Type"
+                  value={selectedType}
+                  fullWidth
+                  variant="standard"
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  sx={{
+                    gap: 2,
+                    flexDirection: { xs: "column", sm: "row" },
+                  }}
+                >
+                  {taskTypes.map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                {/* <MDButton variant="gradient" color="info" fullWidth>
+                  Monthly
+                </MDButton> */}
+              </Grid>
+              <Grid item xs={12} sm={6} lg={4}>
+                <TextField
+                  select
+                  fullWidth
+                  variant="standard"
+                  size="small"
+                  label="Duration"
+                  value={selectedDuration}
+                  onChange={(e) => setSelectedDuration(e.target.value)}
+                  sx={{
+                    gap: 2,
+                    flexDirection: { xs: "column", sm: "row" },
+                  }}
+                >
+                  {durationRanges.map((range) => (
+                    <MenuItem key={range.value} value={range.value}>
+                      {range.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+            </Grid>
+          </MDBox>
+        </Card>
+      </Grid>
+      <Box p={{ xs: 1, sm: 2 }}>
+        {filteredRoles.map((role, index) => (
+          <Paper
+            key={index}
+            elevation={3}
             sx={{
-              width: "100%",
-              display: "flex",
-              gap: 2,
-              "& .MuiTextField-root": {
-                flex: 1,
-                minWidth: { xs: "100%", sm: "200px" },
-              },
-              flexDirection: { xs: "column", sm: "row" },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              size="small"
-              label="Search tasks"
-              variant="outlined"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              fullWidth
-              sx={{
-                gap: 2,
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-            />
-            <TextField
-              select
-              size="small"
-              label="Task Type"
-              value={selectedType}
-              fullWidth
-              onChange={(e) => setSelectedType(e.target.value)}
-              sx={{
-                gap: 2,
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-            >
-              {taskTypes.map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              label="Duration"
-              value={selectedDuration}
-              onChange={(e) => setSelectedDuration(e.target.value)}
-              sx={{
-                gap: 2,
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-            >
-              {durationRanges.map((range) => (
-                <MenuItem key={range.value} value={range.value}>
-                  {range.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-        </Stack>
-      </Paper>
-
-      {filteredRoles.map((role, index) => (
-        <Paper
-          key={index}
-          elevation={3}
-          sx={{
-            mb: { xs: 2, sm: 4 },
-            p: { xs: 1, sm: 2 },
-            overflow: "hidden",
-          }}
-        >
-          <Box display="flex" alignItems="center" mb={2} flexWrap="wrap" gap={1}>
-            <Avatar sx={{ bgcolor: "primary.main" }}>
-              <PersonIcon />
-            </Avatar>
-            <Typography
-              variant="h6"
-              sx={{
-                fontSize: { xs: "1rem", sm: "1.25rem" },
-                wordBreak: "break-word",
-              }}
-            >
-              {role.name}
-            </Typography>
-          </Box>
-
-          <Grid
-            container
-            spacing={{ xs: 1, sm: 2 }}
-            sx={{
-              fontWeight: "bold",
-              bgcolor: "#f5f5f5",
-              py: 1,
-              mb: 1,
+              mb: { xs: 2, sm: 4 },
               p: { xs: 1, sm: 2 },
-              borderBottom: "1px solid #eee",
+              overflow: "hidden",
             }}
           >
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" noWrap>
-                Task Name
+            <Box display="flex" alignItems="center" mb={2} flexWrap="wrap" gap={1}>
+              <Avatar sx={{ bgcolor: "primary.main" }}>
+                <PersonIcon />
+              </Avatar>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontSize: { xs: "1rem", sm: "1.25rem" },
+                  wordBreak: "break-word",
+                }}
+              >
+                {role.name}
               </Typography>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" noWrap>
-                Description
-              </Typography>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" noWrap>
-                Task Type
-              </Typography>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" noWrap>
-                Duration
-              </Typography>
-            </Grid>
-          </Grid>
+            </Box>
 
-          {role.tasks.map((task, idx) => (
             <Grid
-              key={idx}
               container
               spacing={{ xs: 1, sm: 2 }}
               sx={{
+                fontWeight: "bold",
+                bgcolor: "#f5f5f5",
+                py: 1,
                 mb: 1,
                 p: { xs: 1, sm: 2 },
                 borderBottom: "1px solid #eee",
-                "&:last-child": {
-                  borderBottom: "none",
-                },
               }}
             >
               <Grid item xs={6} sm={3}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    wordBreak: "break-word",
-                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
-                  }}
-                >
-                  {task.name}
+                <Typography variant="subtitle2" noWrap>
+                  Task Name
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={3}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    wordBreak: "break-word",
-                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
-                  }}
-                >
-                  {task.description}
+                <Typography variant="subtitle2" noWrap>
+                  Description
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={3}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    wordBreak: "break-word",
-                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
-                  }}
-                >
-                  {task.tasktype}
+                <Typography variant="subtitle2" noWrap>
+                  Task Type
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={3}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    wordBreak: "break-word",
-                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
-                  }}
-                >
-                  {task.duration}
+                <Typography variant="subtitle2" noWrap>
+                  Duration
                 </Typography>
               </Grid>
             </Grid>
-          ))}
-        </Paper>
-      ))}
-    </Box>
+
+            {role.tasks.map((task, idx) => (
+              <Grid
+                key={idx}
+                container
+                spacing={{ xs: 1, sm: 2 }}
+                sx={{
+                  mb: 1,
+                  p: { xs: 1, sm: 2 },
+                  borderBottom: "1px solid #eee",
+                  "&:last-child": {
+                    borderBottom: "none",
+                  },
+                }}
+              >
+                <Grid item xs={6} sm={3}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      wordBreak: "break-word",
+                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    }}
+                  >
+                    {task.name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      wordBreak: "break-word",
+                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    }}
+                  >
+                    {task.description}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      wordBreak: "break-word",
+                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    }}
+                  >
+                    {task.tasktype}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      wordBreak: "break-word",
+                      fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    }}
+                  >
+                    {task.duration}
+                  </Typography>
+                </Grid>
+              </Grid>
+            ))}
+          </Paper>
+        ))}
+      </Box>
+    </>
   );
 };
 

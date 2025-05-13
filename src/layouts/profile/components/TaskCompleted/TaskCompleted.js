@@ -44,7 +44,6 @@ const TasksCompleted = () => {
     const fetchTasks = async () => {
       try {
         const rawData = await taskBreakdownProfilleData();
-        console.log(rawData.customer);
         const transformed = transformSharePointData(rawData);
         setTaskData(transformed);
         setFilteredData(transformed);
