@@ -136,7 +136,6 @@ const employeeData = [
     department: "Consulting Services",
     joiningDate: "22 Jan 2024",
     location: "Bengaluru",
-    phone: "+91 9791975891",
     status: "Active",
   },
   {
@@ -146,17 +145,15 @@ const employeeData = [
     department: "IT Support",
     joiningDate: "10 Mar 2022",
     location: "Delhi",
-    phone: "+91 9876543210",
     status: "Active",
   },
   {
-    givenName: "Riya",
-    name: "Riya Patel",
+    givenName: "Ganapathysundaram",
+    name: "Ganapathysundaram Venkatramanathan",
     employeeId: "00027",
     department: "HR",
     joiningDate: "05 Sep 2023",
     location: "Mumbai",
-    phone: "+91 9123456789",
     status: "Inactive",
   },
   {
@@ -166,7 +163,6 @@ const employeeData = [
     department: "Finance",
     joiningDate: "01 Jan 2021",
     location: "Chennai",
-    phone: "+91 9988776655",
     status: "Active",
   },
   {
@@ -176,7 +172,6 @@ const employeeData = [
     department: "Marketing",
     joiningDate: "14 Feb 2022",
     location: "Pune",
-    phone: "+91 9090909090",
     status: "Active",
   },
 ];
