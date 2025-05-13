@@ -231,7 +231,7 @@ function Header({ children }) {
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                {user?.name || "Please Upload a Photo..."}
+                {user?.name || "Please Wait..."}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
                 {user?.jobTitle || ""}

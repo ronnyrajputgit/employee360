@@ -122,12 +122,128 @@
 //   }
 // };
 
+// import { getAccessToken } from "./authProvider";
+
+// // Default profile image
+// const DEFAULT_PROFILE_IMAGE = "/default-profile.png";
+
+// // Sample employee data
+// const employeeData = [
+//   {
+//     givenName: "Krishna",
+//     name: "Krishna Kumar",
+//     employeeId: "00064",
+//     department: "Consulting Services",
+//     joiningDate: "22 Jan 2024",
+//     location: "Bengaluru",
+//     status: "Active",
+//   },
+//   {
+//     givenName: "Ankit",
+//     name: "Ankit Sharma",
+//     employeeId: "00012",
+//     department: "IT Support",
+//     joiningDate: "10 Mar 2022",
+//     location: "Delhi",
+//     status: "Active",
+//   },
+//   {
+//     givenName: "Ganapathysundaram",
+//     name: "Ganapathysundaram Venkatramanathan",
+//     employeeId: "00027",
+//     department: "HR",
+//     joiningDate: "05 Sep 2023",
+//     location: "Mumbai",
+//     status: "Inactive",
+//   },
+//   {
+//     givenName: "Rahul",
+//     name: "Rahul Verma",
+//     employeeId: "00033",
+//     department: "Finance",
+//     joiningDate: "01 Jan 2021",
+//     location: "Chennai",
+//     status: "Active",
+//   },
+//   {
+//     givenName: "Sneha",
+//     name: "Sneha Iyer",
+//     employeeId: "00045",
+//     department: "Marketing",
+//     joiningDate: "14 Feb 2022",
+//     location: "Pune",
+//     status: "Active",
+//   },
+// ];
+
+// export const getUserProfile = async () => {
+//   try {
+//     const token = await getAccessToken();
+
+//     // 1. Fetch user basic profile
+//     const profileResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     if (!profileResponse.ok) {
+//       throw new Error(`Failed to fetch user profile: ${profileResponse.status}`);
+//     }
+
+//     const profile = await profileResponse.json();
+//     console.log("User profile:", profile);
+
+//     // 2. Fetch photo
+//     let photoUrl = DEFAULT_PROFILE_IMAGE;
+
+//     try {
+//       const photoResponse = await fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       if (photoResponse.ok) {
+//         const photoBlob = await photoResponse.blob();
+//         photoUrl = URL.createObjectURL(photoBlob);
+//       }
+//     } catch (photoError) {
+//       console.warn("Error fetching photo, using default.");
+//     }
+
+//     // 3. Match employee record
+//     const match = employeeData.find(
+//       (emp) =>
+//         emp.name.toLowerCase() === profile.displayName.toLowerCase() ||
+//         emp.givenName.toLowerCase() === profile.givenName.toLowerCase()
+//     );
+
+//     // 4. Return merged profile
+//     return {
+//       name: profile.displayName,
+//       email: profile.mail || profile.userPrincipalName,
+//       jobTitle: profile.jobTitle || "N/A",
+//       photo: photoUrl,
+//       phone: profile.mobilePhone || "N/A",
+//       employeeId: match?.employeeId || "N/A",
+//       department: match?.department || "N/A",
+//       joiningDate: match?.joiningDate || "N/A",
+//       location: match?.location || "N/A",
+//       status: match?.status || "N/A",
+//     };
+//   } catch (error) {
+//     console.error("Error fetching full user profile:", error);
+//     return null;
+//   }
+// };
+
 import { getAccessToken } from "./authProvider";
 
-// Default profile image
+// Default fallback profile image
 const DEFAULT_PROFILE_IMAGE = "/default-profile.png";
 
-// Sample employee data
+// Static employee dataset
 const employeeData = [
   {
     givenName: "Krishna",
@@ -180,7 +296,7 @@ export const getUserProfile = async () => {
   try {
     const token = await getAccessToken();
 
-    // 1. Fetch user basic profile
+    // Fetch Microsoft user profile
     const profileResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -192,11 +308,9 @@ export const getUserProfile = async () => {
     }
 
     const profile = await profileResponse.json();
-    console.log("User profile:", profile);
 
-    // 2. Fetch photo
+    // Fetch profile photo
     let photoUrl = DEFAULT_PROFILE_IMAGE;
-
     try {
       const photoResponse = await fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
         headers: {
@@ -208,32 +322,39 @@ export const getUserProfile = async () => {
         const photoBlob = await photoResponse.blob();
         photoUrl = URL.createObjectURL(photoBlob);
       }
-    } catch (photoError) {
-      console.warn("Error fetching photo, using default.");
+    } catch {
+      console.warn("Profile photo not found. Using default.");
     }
 
-    // 3. Match employee record
+    // Find matching employee from static data
     const match = employeeData.find(
       (emp) =>
         emp.name.toLowerCase() === profile.displayName.toLowerCase() ||
-        emp.givenName.toLowerCase() === profile.givenName.toLowerCase()
+        emp.givenName.toLowerCase() === (profile.givenName || "").toLowerCase()
     );
 
-    // 4. Return merged profile
+    const matchedAdditionalData = match
+      ? {
+          employeeId: match.employeeId,
+          department: match.department,
+          joiningDate: match.joiningDate,
+          location: match.location,
+          status: match.status,
+        }
+      : {};
+
+    // Return merged object
     return {
       name: profile.displayName,
+      givenName: profile.givenName || "",
       email: profile.mail || profile.userPrincipalName,
       jobTitle: profile.jobTitle || "N/A",
-      photo: photoUrl,
       phone: profile.mobilePhone || "N/A",
-      employeeId: match?.employeeId || "N/A",
-      department: match?.department || "N/A",
-      joiningDate: match?.joiningDate || "N/A",
-      location: match?.location || "N/A",
-      status: match?.status || "N/A",
+      photo: photoUrl,
+      ...matchedAdditionalData,
     };
   } catch (error) {
-    console.error("Error fetching full user profile:", error);
+    console.error("Error fetching user profile:", error);
     return null;
   }
 };
