@@ -24,7 +24,7 @@ export const taskBreakdownProfilleData = async () => {
 
 export const fetchTaskListsData = async () => {
   const response = await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "ProjectsList");
-  console.log("api side se", response);
+  // console.log("api side se", response);
   return response.map((item) => ({
     id: item.id,
     projectName: item.fields.Title || "",
