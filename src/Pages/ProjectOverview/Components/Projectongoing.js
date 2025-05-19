@@ -413,108 +413,44 @@
 // };
 
 // export default Projectsongoing;
-
-import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, Grid, Typography, MenuItem, useMediaQuery } from "@mui/material";
+import React from "react";
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  useMediaQuery,
+  CircularProgress,
+} from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EmailIcon from "@mui/icons-material/Email";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { fetchTaskListsData } from "apis/sharepointApi";
 import MDAvatar from "components/MDAvatar";
-import MDBox from "components/MDBox";
-import MDInput from "components/MDInput";
+import { useGlobalFilters } from "context/GlobalFilterContext";
 
 const Projectsongoing = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
-  const [projectsData, setProjectsData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [projectFilter, setProjectFilter] = useState("");
-  const [ownerFilter, setOwnerFilter] = useState("");
+  const { filteredData, loading } = useGlobalFilters();
+  const projectsData = filteredData.projects || [];
 
-  // Fetch data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchTaskListsData();
-        setProjectsData(data);
-        setFilteredData(data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
 
-    fetchData();
-  }, []);
-
-  // Filter when filters change
-  useEffect(() => {
-    let filtered = projectsData;
-
-    if (projectFilter) {
-      filtered = filtered.filter((project) => project.projectName === projectFilter);
-    }
-
-    if (ownerFilter) {
-      filtered = filtered.filter((project) => project.projectManagerName === ownerFilter);
-    }
-
-    setFilteredData(filtered);
-  }, [projectFilter, ownerFilter, projectsData]);
-
-  // Get unique filter options
-  const projectNames = [...new Set(projectsData.map((p) => p.projectName))];
-  const ownerNames = [...new Set(projectsData.map((p) => p.projectManagerName))];
+  if (!loading && projectsData.length === 0) {
+    return null; // Don't render anything
+  }
 
   return (
     <Box p={2}>
       <Grid container spacing={4}>
-        {/* Filter UI */}
-        <Grid item xs={12}>
-          <Card>
-            <MDBox p={2}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} lg={6}>
-                  <MDInput
-                    select
-                    size="small"
-                    label="Filter by Project"
-                    fullWidth
-                    value={projectFilter}
-                    onChange={(e) => setProjectFilter(e.target.value)}
-                  >
-                    <MenuItem value="">All Projects</MenuItem>
-                    {projectNames.map((name) => (
-                      <MenuItem key={name} value={name}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </MDInput>
-                </Grid>
-                <Grid item xs={12} sm={6} lg={6}>
-                  <MDInput
-                    select
-                    size="small"
-                    label="Filter by Task Owner"
-                    fullWidth
-                    value={ownerFilter}
-                    onChange={(e) => setOwnerFilter(e.target.value)}
-                  >
-                    <MenuItem value="">All Owners</MenuItem>
-                    {ownerNames.map((owner) => (
-                      <MenuItem key={owner} value={owner}>
-                        {owner}
-                      </MenuItem>
-                    ))}
-                  </MDInput>
-                </Grid>
-              </Grid>
-            </MDBox>
-          </Card>
-        </Grid>
-
-        {/* Project Cards */}
-        {filteredData.map((project, index) => (
+        {projectsData.map((project, index) => (
           <Grid item xs={12} key={index}>
             <Card sx={{ borderLeft: "6px solid #2196f3", borderRadius: 3, mb: 3 }}>
               <CardContent>
@@ -528,19 +464,19 @@ const Projectsongoing = () => {
                       <Box display="flex" alignItems="center" gap={1}>
                         <BusinessIcon fontSize="small" />
                         <Typography variant="body2">
-                          <strong>Project:</strong> {project.projectName}
+                          <strong>Project:</strong> {project.ProjectName}
                         </Typography>
                       </Box>
                       <Box display="flex" alignItems="center" gap={1}>
                         <AccessTimeIcon fontSize="small" />
                         <Typography variant="body2">
-                          <strong>Shift:</strong> {project.shiftTimings}
+                          <strong>Shift:</strong> {project.ShiftTimings}
                         </Typography>
                       </Box>
                       <Box display="flex" alignItems="center" gap={1}>
                         <EmailIcon fontSize="small" />
                         <Typography variant="body2">
-                          <strong>Owner:</strong> {project.projectManagerName}
+                          <strong>Owner:</strong> {project.ProjectOwnerName}
                         </Typography>
                       </Box>
                     </Typography>
@@ -556,8 +492,8 @@ const Projectsongoing = () => {
                       <PeopleAltIcon /> Team Members
                     </Typography>
                     <Grid container spacing={2}>
-                      {project.teamMembers?.length > 0 ? (
-                        project.teamMembers.map((member, idx) => (
+                      {project.TeamMembers?.length > 0 ? (
+                        project.TeamMembers.map((member, idx) => (
                           <Grid item xs={12} sm={6} md={4} key={idx} sx={{ mt: 2, mb: 3 }}>
                             <Card variant="outlined" sx={{ borderRadius: 2, pt: 6, pb: 2 }}>
                               {/* Centered Avatar on Top */}
@@ -615,3 +551,48 @@ const Projectsongoing = () => {
 };
 
 export default Projectsongoing;
+
+// import { useGlobalFilters } from "context/GlobalFilterContext";
+// import React from "react";
+
+// const Projectongoing = () => {
+//   const { filteredData, loading } = useGlobalFilters();
+
+//   const projects = filteredData.projects || [];
+//   const tasks = filteredData.tasks || [];
+
+//   return (
+//     <div>
+//       <h3>Projects</h3>
+//       <ul>
+//         {loading ? (
+//           <li>Loading...</li>
+//         ) : (
+//           projects.map((proj, i) => (
+//             <li key={`proj-${i}`}>
+//               <strong>{proj.ProjectName}</strong> - Created By: {proj.CreatedBy}
+//               <img src={proj.photoUrl} alt="Project Image" />
+//             </li>
+//           ))
+//         )}
+//       </ul>
+
+//       <h3>Tasks</h3>
+//       <ul>
+//         {loading ? (
+//           <li>Loading...</li>
+//         ) : (
+//           tasks.map((task, i) => (
+//             <li key={`task-${i}`}>
+//               <strong>{task.TaskNames}</strong> - Type: {task.TaskType}, Project Type:{" "}
+//               {task.ProjectType}, Created By: {task.createdBy}
+//               <img src={task.photoUrl} alt="Task Image" />
+//             </li>
+//           ))
+//         )}
+//       </ul>
+//     </div>
+//   );
+// };
+
+// export default Projectongoing;

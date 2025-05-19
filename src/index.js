@@ -5,14 +5,17 @@ import App from "App";
 
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
+import { GlobalFilterProvider } from "context/GlobalFilterContext";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
 
 root.render(
-  <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <App />
-    </MaterialUIControllerProvider>
-  </BrowserRouter>
+  <GlobalFilterProvider>
+    <BrowserRouter>
+      <MaterialUIControllerProvider>
+        <App />
+      </MaterialUIControllerProvider>
+    </BrowserRouter>
+  </GlobalFilterProvider>
 );
