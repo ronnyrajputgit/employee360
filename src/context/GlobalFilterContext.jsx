@@ -198,9 +198,7 @@ const transformers = {
       createdBy: item.createdBy?.user?.displayName || "",
       CreatedDateTime: item.createdDateTime || "",
       Duration: item.fields?.Duration_x0028_inHrs_x0029_ || "",
-      photoUrl: item.createdBy?.user?.email
-        ? `https://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=${item.createdBy.user.email}&size=HR64x64`
-        : "",
+      photoUrl: `https://datainfasolpvtltd.sharepoint.com/sites/DataINFA360/_layouts/15/userphoto.aspx?size=S&username=${item.createdBy.user.email}`,
     })),
   projects: (raw) =>
     raw.map((item) => ({

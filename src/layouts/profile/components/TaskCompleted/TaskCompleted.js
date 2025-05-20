@@ -299,7 +299,6 @@
 // export default TasksCompleted;
 
 // isme apna dikhega
-
 import React, { useState } from "react";
 import {
   Box,
@@ -316,6 +315,8 @@ import AssessmentIcon from "@mui/icons-material/Assessment";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { useGlobalFilters } from "context/GlobalFilterContext";
+import DataTable from "examples/Tables/DataTable";
+import MDAvatar from "components/MDAvatar";
 
 const TasksCompleted = () => {
   const [fullscreen, setFullscreen] = useState(false);
@@ -324,15 +325,38 @@ const TasksCompleted = () => {
   const filteredTasks = filteredData.tasks || [];
   const currentName = (localStorage.getItem("currentName") || "").trim().toLowerCase();
 
-  // Filter tasks where createdBy matches currentName (case-insensitive)
   const myTasks = filteredTasks.filter((task) => {
     if (!task.createdBy) return false;
     return task.createdBy.trim().toLowerCase() === currentName;
   });
 
   const totalTasks = myTasks.length;
-  const completedTasks = myTasks.filter((t) => t.status === "Completed").length;
-  const inProgressTasks = myTasks.filter((t) => t.status === "In Progress").length;
+
+  const columns = [
+    { Header: "Photo", accessor: "photo" },
+    { Header: "Task Name", accessor: "TaskName" },
+    { Header: "Description", accessor: "TaskDescription" },
+    { Header: "Project Type", accessor: "ProjectType" },
+    { Header: "Type", accessor: "TaskType" },
+    { Header: "Duration", accessor: "Duration" },
+    { Header: "Created By", accessor: "createdBy" },
+  ];
+
+  const rows = myTasks.map((task) => ({
+    photo: (
+      <MDAvatar
+        src={task.photoUrl || "https://via.placeholder.com/40"}
+        name={task.createdBy}
+        size="sm"
+      />
+    ),
+    TaskName: task.TaskName,
+    TaskDescription: task.TaskDescription,
+    ProjectType: task.ProjectType || "N/A",
+    TaskType: task.TaskType,
+    Duration: task.Duration,
+    createdBy: task.createdBy,
+  }));
 
   if (loading) {
     return (
@@ -403,53 +427,13 @@ const TasksCompleted = () => {
 
       <Card sx={{ mt: 4, boxShadow: 3 }}>
         <CardContent>
-          <Grid container sx={{ fontWeight: "bold", py: 1, borderBottom: "1px solid #ccc" }}>
-            <Grid item xs={2}>
-              Task Name
-            </Grid>
-            <Grid item xs={3}>
-              Description
-            </Grid>
-            <Grid item xs={2}>
-              Project Type  
-            </Grid>
-            <Grid item xs={2}>
-              Type
-            </Grid>
-            <Grid item xs={1}>
-              Duration
-            </Grid>
-            <Grid item xs={2}>
-              Created By
-            </Grid>
-          </Grid>
-
-          {myTasks.map((task, idx) => (
-            <Grid
-              key={idx}
-              container
-              sx={{ py: 1, borderBottom: "1px solid #e0e0e0", alignItems: "center" }}
-            >
-              <Grid item xs={2}>
-                {task.TaskName}
-              </Grid>
-              <Grid item xs={3}>
-                {task.TaskDescription}
-              </Grid>
-              <Grid item xs={2}>
-                {task.ProjectType || "N/A"}
-              </Grid>
-              <Grid item xs={2}>
-                {task.TaskType}
-              </Grid>
-              <Grid item xs={1}>
-                {task.Duration}
-              </Grid>
-              <Grid item xs={2}>
-                {task.createdBy}
-              </Grid>
-            </Grid>
-          ))}
+          <DataTable
+            table={{ columns, rows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            noEndBorder
+          />
         </CardContent>
       </Card>
     </Box>
