@@ -323,6 +323,8 @@ const TasksCompleted = () => {
   const { filteredData, loading } = useGlobalFilters();
 
   const filteredTasks = filteredData.tasks || [];
+  // console.log(filteredTasks);
+
   const currentName = (localStorage.getItem("currentName") || "").trim().toLowerCase();
 
   const myTasks = filteredTasks.filter((task) => {
@@ -431,7 +433,7 @@ const TasksCompleted = () => {
             table={{ columns, rows }}
             isSorted={false}
             entriesPerPage={false}
-            showTotalEntries={false}
+            showTotalEntries={true}
             noEndBorder
           />
         </CardContent>

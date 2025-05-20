@@ -307,50 +307,15 @@
 // import React, { useEffect, useState } from "react";
 // import { Box, Typography, Paper, Grid, Avatar, Card } from "@mui/material";
 // import PersonIcon from "@mui/icons-material/Person";
-// import { taskBreakdownProfilleData } from "apis/sharepointApi";
 // import MDBox from "components/MDBox";
-
-// const transformSharePointData = (data) => {
-//   const grouped = {};
-
-//   data.forEach((item) => {
-//     const fields = item.fields;
-//     const stakeholderName = item.createdBy.user.displayName;
-
-//     if (!grouped[stakeholderName]) {
-//       grouped[stakeholderName] = {
-//         name: stakeholderName,
-//         tasks: [],
-//       };
-//     }
-
-//     grouped[stakeholderName].tasks.push({
-//       name: fields.Title || "Untitled",
-//       status: fields.Status || "Not Started",
-//       description: fields.TaskDescription || "No description",
-//       duration: fields.Duration_x0028_inHrs_x0029_ + " hrs",
-//       tasktype: fields.TaskType || "General",
-//     });
-//   });
-
-//   return Object.values(grouped);
-// };
+// import { useGlobalFilters } from "context/GlobalFilterContext";
 
 // const TaskbreakDown = () => {
-//   const [roles, setRoles] = useState([]);
+//   const { filteredData, loading } = useGlobalFilters();
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const transformed = await taskBreakdownProfilleData();
-//         setRoles(transformed);
-//       } catch (err) {
-//         console.error("Failed to fetch SharePoint data", err);
-//       }
-//     };
+//   const roles = filteredData.tasks || [];
 
-//     fetchData();
-//   }, []);
+//   console.log(roles);
 
 //   return (
 //     <>
@@ -362,9 +327,169 @@
 //         </Card>
 //       </Grid>
 //       <Box p={{ xs: 1, sm: 2 }}>
-//         {roles.map((role, index) => (
+//         <Paper
+//           key={"index"}
+//           elevation={3}
+//           sx={{
+//             mb: { xs: 2, sm: 4 },
+//             p: { xs: 1, sm: 2 },
+//             overflow: "hidden",
+//           }}
+//         >
+//           <Box display="flex" alignItems="center" mb={2} flexWrap="wrap" gap={1}>
+//             {/* <Avatar sx={{ bgcolor: "primary.main" }} src={role.photoUrl}>
+//                 {!role.photoUrl && <PersonIcon />}
+//               </Avatar> */}
+
+//             <Typography
+//               variant="h6"
+//               sx={{
+//                 fontSize: { xs: "1rem", sm: "1.25rem" },
+//                 wordBreak: "break-word",
+//               }}
+//             >
+//               {"role.createdBy"}
+//             </Typography>
+//           </Box>
+
+//           <Grid
+//             container
+//             spacing={{ xs: 1, sm: 2 }}
+//             sx={{
+//               fontWeight: "bold",
+//               bgcolor: "#f5f5f5",
+//               py: 1,
+//               mb: 1,
+//               p: { xs: 1, sm: 2 },
+//               borderBottom: "1px solid #eee",
+//             }}
+//           >
+//             <Grid item xs={6} sm={3}>
+//               <Typography variant="subtitle2" noWrap>
+//                 Task Name
+//               </Typography>
+//             </Grid>
+//             <Grid item xs={6} sm={3}>
+//               <Typography variant="subtitle2" noWrap>
+//                 Description
+//               </Typography>
+//             </Grid>
+//             <Grid item xs={6} sm={3}>
+//               <Typography variant="subtitle2" noWrap>
+//                 Task Type
+//               </Typography>
+//             </Grid>
+//             <Grid item xs={6} sm={3}>
+//               <Typography variant="subtitle2" noWrap>
+//                 Duration
+//               </Typography>
+//             </Grid>
+//           </Grid>
+
+//           <Grid
+//             key={"idx"}
+//             container
+//             spacing={{ xs: 1, sm: 2 }}
+//             sx={{
+//               mb: 1,
+//               p: { xs: 1, sm: 2 },
+//               borderBottom: "1px solid #eee",
+//               "&:last-child": {
+//                 borderBottom: "none",
+//               },
+//             }}
+//           >
+//             <Grid item xs={6} sm={3}>
+//               <Typography
+//                 variant="subtitle2"
+//                 sx={{
+//                   wordBreak: "break-word",
+//                   fontSize: { xs: "0.8rem", sm: "0.875rem" },
+//                 }}
+//               >
+//                 {"task.name"}
+//               </Typography>
+//             </Grid>
+//             <Grid item xs={6} sm={3}>
+//               <Typography
+//                 variant="subtitle2"
+//                 sx={{
+//                   wordBreak: "break-word",
+//                   fontSize: { xs: "0.8rem", sm: "0.875rem" },
+//                 }}
+//               >
+//                 {"task.description"}
+//               </Typography>
+//             </Grid>
+//             <Grid item xs={6} sm={3}>
+//               <Typography
+//                 variant="subtitle2"
+//                 sx={{
+//                   wordBreak: "break-word",
+//                   fontSize: { xs: "0.8rem", sm: "0.875rem" },
+//                 }}
+//               >
+//                 {"task.tasktype"}
+//               </Typography>
+//             </Grid>
+//             <Grid item xs={6} sm={3}>
+//               <Typography
+//                 variant="subtitle2"
+//                 sx={{
+//                   wordBreak: "break-word",
+//                   fontSize: { xs: "0.8rem", sm: "0.875rem" },
+//                 }}
+//               >
+//                 {"task.duration"}
+//               </Typography>
+//             </Grid>
+//           </Grid>
+//         </Paper>
+//       </Box>
+//     </>
+//   );
+// };
+
+// export default TaskbreakDown;
+
+// import React from "react";
+// import { Box, Typography, Paper, Grid, Avatar, Card } from "@mui/material";
+// import PersonIcon from "@mui/icons-material/Person";
+// import MDBox from "components/MDBox";
+// import { useGlobalFilters } from "context/GlobalFilterContext";
+
+// const TaskbreakDown = () => {
+//   const { filteredData, loading } = useGlobalFilters();
+//   const roles = filteredData.tasks || [];
+
+//   // console.log(roles);
+//   // Grouping by createdBy
+//   const groupedByUser = roles.reduce((acc, task) => {
+//     const key = task.createdBy;
+//     if (!acc[key]) {
+//       acc[key] = {
+//         createdBy: task.createdBy,
+//         photoUrl: task.photoUrl,
+//         tasks: [],
+//       };
+//     }
+//     acc[key].tasks.push(task);
+//     return acc;
+//   }, {});
+
+//   return (
+//     <>
+//       <Grid item xs={12} lg={12}>
+//         <Card>
+//           <MDBox p={2}>
+//             <Typography variant="h6">Task Breakdown</Typography>
+//           </MDBox>
+//         </Card>
+//       </Grid>
+
+//       {Object.values(groupedByUser).map((user, index) => (
+//         <Box key={index} p={{ xs: 1, sm: 2 }}>
 //           <Paper
-//             key={index}
 //             elevation={3}
 //             sx={{
 //               mb: { xs: 2, sm: 4 },
@@ -372,11 +497,10 @@
 //               overflow: "hidden",
 //             }}
 //           >
-//             <Box display="flex" alignItems="center" mb={2} flexWrap="wrap" gap={1}>
-//               <Avatar sx={{ bgcolor: "primary.main" }} src={role.photoUrl}>
-//                 {!role.photoUrl && <PersonIcon />}
+//             <Box display="flex" alignItems="center" mb={2} gap={1}>
+//               <Avatar src={user.photoUrl} sx={{ bgcolor: "primary.main" }}>
+//                 {!user.photoUrl && <PersonIcon />}
 //               </Avatar>
-
 //               <Typography
 //                 variant="h6"
 //                 sx={{
@@ -384,10 +508,11 @@
 //                   wordBreak: "break-word",
 //                 }}
 //               >
-//                 {role.name}
+//                 {user.createdBy}
 //               </Typography>
 //             </Box>
 
+//             {/* Header Row */}
 //             <Grid
 //               container
 //               spacing={{ xs: 1, sm: 2 }}
@@ -417,12 +542,13 @@
 //               </Grid>
 //               <Grid item xs={6} sm={3}>
 //                 <Typography variant="subtitle2" noWrap>
-//                   Duration
+//                   Duration (hrs)
 //                 </Typography>
 //               </Grid>
 //             </Grid>
 
-//             {role.tasks.map((task, idx) => (
+//             {/* Task Rows */}
+//             {user.tasks.map((task, idx) => (
 //               <Grid
 //                 key={idx}
 //                 container
@@ -444,7 +570,7 @@
 //                       fontSize: { xs: "0.8rem", sm: "0.875rem" },
 //                     }}
 //                   >
-//                     {task.name}
+//                     {task.TaskName}
 //                   </Typography>
 //                 </Grid>
 //                 <Grid item xs={6} sm={3}>
@@ -455,7 +581,7 @@
 //                       fontSize: { xs: "0.8rem", sm: "0.875rem" },
 //                     }}
 //                   >
-//                     {task.description}
+//                     {task.TaskDescription}
 //                   </Typography>
 //                 </Grid>
 //                 <Grid item xs={6} sm={3}>
@@ -466,7 +592,7 @@
 //                       fontSize: { xs: "0.8rem", sm: "0.875rem" },
 //                     }}
 //                   >
-//                     {task.tasktype}
+//                     {task.TaskType}
 //                   </Typography>
 //                 </Grid>
 //                 <Grid item xs={6} sm={3}>
@@ -477,14 +603,184 @@
 //                       fontSize: { xs: "0.8rem", sm: "0.875rem" },
 //                     }}
 //                   >
-//                     {task.duration}
+//                     {task.Duration}
 //                   </Typography>
 //                 </Grid>
 //               </Grid>
 //             ))}
 //           </Paper>
-//         ))}
-//       </Box>
+//         </Box>
+//       ))}
+//     </>
+//   );
+// };
+
+// export default TaskbreakDown;
+
+// reduced code
+
+// import React from "react";
+// import { Box, Typography, Paper, Grid, Avatar, Card, CardContent } from "@mui/material";
+// import PersonIcon from "@mui/icons-material/Person";
+// import MDBox from "components/MDBox";
+// import { useGlobalFilters } from "context/GlobalFilterContext";
+// import DataTable from "examples/Tables/DataTable";
+
+// const TaskbreakDown = () => {
+//   const { filteredData } = useGlobalFilters();
+//   const roles = filteredData.tasks || [];
+
+//   // Grouping by createdBy
+//   const groupedByUser = roles.reduce((acc, task) => {
+//     const key = task.createdBy;
+//     if (!acc[key]) {
+//       acc[key] = {
+//         createdBy: key,
+//         photoUrl: task.photoUrl,
+//         tasks: [],
+//       };
+//     }
+//     acc[key].tasks.push(task);
+//     return acc;
+//   }, {});
+
+//   // Convert grouped object to array
+//   const groupedUsers = Object.keys(groupedByUser).map((key) => groupedByUser[key]);
+
+//   return (
+//     <>
+//       <Grid item xs={12} lg={12}>
+//         <Card>
+//           <MDBox p={2}>
+//             <Typography variant="h6">Task Breakdown</Typography>
+//           </MDBox>
+//         </Card>
+//       </Grid>
+
+//       {groupedUsers.map((user, index) => (
+//         <Box key={index} p={{ xs: 1, sm: 2 }}>
+//           <Paper
+//             elevation={3}
+//             sx={{
+//               mb: { xs: 2, sm: 4 },
+//               p: { xs: 1, sm: 2 },
+//               overflow: "hidden",
+//             }}
+//           >
+//             <Box display="flex" alignItems="center" mb={2} gap={1}>
+//               <Avatar src={user.photoUrl} sx={{ bgcolor: "primary.main" }}>
+//                 {!user.photoUrl && <PersonIcon />}
+//               </Avatar>
+//               <Typography
+//                 variant="h6"
+//                 sx={{
+//                   fontSize: { xs: "1rem", sm: "1.25rem" },
+//                   wordBreak: "break-word",
+//                 }}
+//               >
+//                 {user.createdBy}
+//               </Typography>
+//             </Box>
+
+//             <Card sx={{ mt: 4, boxShadow: 3 }}>
+//               <CardContent>
+//                 <DataTable
+//                   table={{ columns, rows }}
+//                   isSorted={false}
+//                   entriesPerPage={false}
+//                   showTotalEntries={false}
+//                   noEndBorder
+//                 />
+//               </CardContent>
+//             </Card>
+
+//             {/* Header Row */}
+//             <Grid
+//               container
+//               spacing={{ xs: 1, sm: 2 }}
+//               sx={{
+//                 fontWeight: "bold",
+//                 bgcolor: "#f5f5f5",
+//                 py: 1,
+//                 mb: 1,
+//                 p: { xs: 1, sm: 2 },
+//                 borderBottom: "1px solid #eee",
+//               }}
+//             >
+//               <Grid item xs={6} sm={3}>
+//                 <Typography variant="subtitle2" noWrap>
+//                   Task Name
+//                 </Typography>
+//               </Grid>
+//               <Grid item xs={6} sm={3}>
+//                 <Typography variant="subtitle2" noWrap>
+//                   Description
+//                 </Typography>
+//               </Grid>
+//               <Grid item xs={6} sm={3}>
+//                 <Typography variant="subtitle2" noWrap>
+//                   Task Type
+//                 </Typography>
+//               </Grid>
+//               <Grid item xs={6} sm={3}>
+//                 <Typography variant="subtitle2" noWrap>
+//                   Duration (hrs)
+//                 </Typography>
+//               </Grid>
+//             </Grid>
+
+//             {/* Task Rows */}
+//             {user.tasks.map((task, idx) => (
+//               <Grid
+//                 key={idx}
+//                 container
+//                 spacing={{ xs: 1, sm: 2 }}
+//                 sx={{
+//                   mb: 1,
+//                   p: { xs: 1, sm: 2 },
+//                   borderBottom: "1px solid #eee",
+//                   "&:last-child": {
+//                     borderBottom: "none",
+//                   },
+//                 }}
+//               >
+//                 <Grid item xs={6} sm={3}>
+//                   <Typography
+//                     variant="subtitle2"
+//                     sx={{ wordBreak: "break-word", fontSize: { xs: "0.8rem", sm: "0.875rem" } }}
+//                   >
+//                     {task.TaskName}
+//                   </Typography>
+//                 </Grid>
+//                 <Grid item xs={6} sm={3}>
+//                   <Typography
+//                     variant="subtitle2"
+//                     sx={{ wordBreak: "break-word", fontSize: { xs: "0.8rem", sm: "0.875rem" } }}
+//                   >
+//                     {task.TaskDescription}
+//                   </Typography>
+//                 </Grid>
+//                 <Grid item xs={6} sm={3}>
+//                   <Typography
+//                     variant="subtitle2"
+//                     sx={{ wordBreak: "break-word", fontSize: { xs: "0.8rem", sm: "0.875rem" } }}
+//                   >
+//                     {task.TaskType}
+//                   </Typography>
+//                 </Grid>
+//                 <Grid item xs={6} sm={3}>
+//                   <Typography
+//                     variant="subtitle2"
+//                     sx={{ wordBreak: "break-word", fontSize: { xs: "0.8rem", sm: "0.875rem" } }}
+//                   >
+//                     {task.Duration}
+//                   </Typography>
+//                 </Grid>
+//               </Grid>
+//             ))}
+//           </Paper>
+//         </Box>
+//       ))}
 //     </>
 //   );
 // };
@@ -492,9 +788,93 @@
 // export default TaskbreakDown;
 
 import React from "react";
+import { Box, Typography, Paper, Grid, Avatar, Card, CardContent } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import MDBox from "components/MDBox";
+import { useGlobalFilters } from "context/GlobalFilterContext";
+import DataTable from "examples/Tables/DataTable";
 
-const Taskbreakdown = () => {
-  return <div>Taskbreakdown</div>;
+const TaskbreakDown = () => {
+  const { filteredData } = useGlobalFilters();
+  const tasks = filteredData.tasks || [];
+
+  // Group by createdBy
+  const groupedByUser = tasks.reduce((acc, task) => {
+    const key = task.createdBy;
+    if (!acc[key]) {
+      acc[key] = {
+        createdBy: key,
+        photoUrl: task.photoUrl,
+        tasks: [],
+      };
+    }
+    acc[key].tasks.push(task);
+    return acc;
+  }, {});
+
+  const groupedUsers = Object.values(groupedByUser);
+
+  // Define reusable columns for the DataTable
+  const columns = [
+    { Header: "Task Name", accessor: "TaskName", width: "30%" },
+    { Header: "Task Description", accessor: "TaskDescription", width: "30%" },
+    { Header: "Task Type", accessor: "TaskType", width: "20%" },
+    { Header: "Duration (hrs)", accessor: "Duration", width: "20%" },
+  ];
+
+  return (
+    <>
+      {groupedUsers.map((user, index) => {
+        // Prepare rows for the current user
+        const rows = user.tasks.map((task) => ({
+          TaskName: task.TaskName,
+          TaskDescription: task.TaskDescription,
+          TaskType: task.TaskType,
+          Duration: task.Duration,
+        }));
+
+        return (
+          <Box key={index} p={{ xs: 1, sm: 2 }}>
+            <Paper
+              elevation={3}
+              sx={{
+                mb: { xs: 2, sm: 4 },
+                p: { xs: 1, sm: 2 },
+                overflow: "hidden",
+              }}
+            >
+              <Box display="flex" alignItems="center" mb={2} gap={1}>
+                <Avatar src={user.photoUrl} sx={{ bgcolor: "primary.main" }}>
+                  {!user.photoUrl && <PersonIcon />}
+                </Avatar>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: { xs: "1rem", sm: "1.25rem" },
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {user.createdBy}
+                </Typography>
+              </Box>
+
+              <Card sx={{ mt: 2, boxShadow: 3 }}>
+                <CardContent>
+                  <DataTable
+                    table={{ columns, rows }}
+                    isSorted={false}
+                    entriesPerPage={true}
+                    showTotalEntries={true}
+                    noEndBorder
+                  />
+                </CardContent>
+              </Card>
+            </Paper>
+          </Box>
+        );
+      })}
+    </>
+  );
 };
 
-export default Taskbreakdown;
+export default TaskbreakDown;
