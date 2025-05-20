@@ -158,6 +158,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
@@ -165,6 +166,18 @@ import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { useGlobalFilters } from "context/GlobalFilterContext";
 
 const TasksCompleted = () => {
+  const internalMember = [
+    {
+      name: "Aravvindhan Shanmugaraj",
+    },
+    {
+      name: "Balam Ashok",
+    },
+    {
+      name: "Krishna Kumar",
+    },
+  ];
+
   const [fullscreen, setFullscreen] = useState(false);
   const { filteredData, loading } = useGlobalFilters();
 
@@ -175,6 +188,18 @@ const TasksCompleted = () => {
   const totalTasks = filteredTasks.length;
   const completedTasks = filteredTasks.filter((t) => t.status === "Completed").length;
   const inProgressTasks = filteredTasks.filter((t) => t.status === "In Progress").length;
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
+
+  if (!loading && filteredTasks.length === 0) {
+    return null; // Don't render anything
+  }
 
   return (
     <Box
@@ -281,11 +306,3 @@ const TasksCompleted = () => {
 };
 
 export default TasksCompleted;
-
-// import React from "react";
-
-// const TaskCompleted = () => {
-//   return <div>TaskCompleted</div>;
-// };
-
-// export default TaskCompleted;

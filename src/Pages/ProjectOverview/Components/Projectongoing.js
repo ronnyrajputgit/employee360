@@ -435,6 +435,7 @@ const Projectsongoing = () => {
   const { filteredData, loading } = useGlobalFilters();
   const projectsData = filteredData.projects || [];
 
+  console.log(projectsData);
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="60vh">

@@ -295,20 +295,18 @@ const employeeData = [
 export const getUserProfile = async () => {
   try {
     const token = await getAccessToken();
-
     // Fetch Microsoft user profile
     const profileResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     if (!profileResponse.ok) {
       throw new Error(`Failed to fetch user profile: ${profileResponse.status}`);
     }
-
     const profile = await profileResponse.json();
-
+    // console.log(profile?.displayName);
+    localStorage.setItem("currentName", profile?.displayName);
     // Fetch profile photo
     let photoUrl = DEFAULT_PROFILE_IMAGE;
     try {
@@ -317,7 +315,6 @@ export const getUserProfile = async () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (photoResponse.ok) {
         const photoBlob = await photoResponse.blob();
         photoUrl = URL.createObjectURL(photoBlob);
