@@ -187,8 +187,6 @@ const apiMap = {
   // Add more here...
 };
 
-const currentName = localStorage.getItem("currentName");
-
 // Step 2: Transformers to format each API response
 const transformers = {
   tasks: (raw) =>
