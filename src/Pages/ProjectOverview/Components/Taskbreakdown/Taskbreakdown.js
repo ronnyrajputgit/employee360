@@ -788,14 +788,23 @@
 // export default TaskbreakDown;
 
 import React from "react";
-import { Box, Typography, Paper, Grid, Avatar, Card, CardContent } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Avatar,
+  Card,
+  CardContent,
+  CircularProgress,
+} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import MDBox from "components/MDBox";
 import { useGlobalFilters } from "context/GlobalFilterContext";
 import DataTable from "examples/Tables/DataTable";
 
 const TaskbreakDown = () => {
-  const { filteredData } = useGlobalFilters();
+  const { filteredData, loading } = useGlobalFilters();
   const tasks = filteredData.tasks || [];
 
   // Group by createdBy
@@ -812,6 +821,13 @@ const TaskbreakDown = () => {
     return acc;
   }, {});
 
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
   const groupedUsers = Object.values(groupedByUser);
 
   // Define reusable columns for the DataTable

@@ -204,6 +204,7 @@ const transformers = {
     })),
   projects: (raw) =>
     raw.map((item) => ({
+      ...item,
       ProjectName: item.fields?.Title || "",
       ProjectOwnerName: item.fields.ProjectManager || "",
       CreatedBy: item.createdBy?.user?.displayName || "",
