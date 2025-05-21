@@ -67,6 +67,14 @@ export const taskBreakdownProfilleData = async () => {
   ]);
 };
 
+export const fetchTaskListsData = async () => {
+  return await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "ProjectsList", [
+    //   if space in column name then use _x0020_ instead of space
+    // or sometime  "ProjectOwner" without space
+    "ProjectOwner",
+  ]);
+};
+
 // export const taskBreakdownProfilleData = async () => {
 //   const rawData = await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "Tasks");
 
@@ -97,10 +105,6 @@ export const taskBreakdownProfilleData = async () => {
 
 //   return Object.values(grouped);
 // };
-
-export const fetchTaskListsData = async () => {
-  return await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "ProjectsList");
-};
 
 // export const fetchTaskListsData = async () => {
 //   const response = await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "ProjectsList");
