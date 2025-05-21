@@ -7,19 +7,64 @@ const SHAREPOINT_SITES = {
 };
 
 // Generic function to fetch SharePoint list items
-const fetchSharePointListItems = async (siteUrl, listName) => {
-  const endpoint = `/sites/${siteUrl}/lists/${encodeURIComponent(listName)}/items?expand=fields`;
-  const response = await axios.get(endpoint);
-  return response.data.value;
+// const fetchSharePointListItems = async (siteUrl, listName) => {
+//   const endpoint = `/sites/${siteUrl}/lists/${encodeURIComponent(listName)}/items?expand=fields`;
+//   const response = await axios.get(endpoint);
+//   return response.data.value;
+// };
+
+const fetchSharePointListItems = async (siteUrl, listName, lookupFields = []) => {
+  // Always expand 'fields'; add lookup fields if provided
+  const baseExpand = ["fields", ...lookupFields.map((field) => `fields/${field}`)].join(",");
+  const endpoint = `/sites/${siteUrl}/lists/${encodeURIComponent(
+    listName
+  )}/items?expand=${baseExpand}`;
+  try {
+    const response = await axios.get(endpoint);
+    // console.log(`[${listName}] Data Fetched:`, response.data.value);
+    return response.data.value;
+  } catch (error) {
+    console.error(`Error fetching list items from '${listName}':`, error);
+    return [];
+  }
 };
+
+// for getting lookup values from share point
+// const fetchSharePointListItemslkp = async (siteUrl, listName) => {
+//   const endpoint = `/sites/${siteUrl}/lists/${encodeURIComponent(
+//     listName
+//   )}/items?expand=fields,fields/Customer,fields/Internal`;
+
+//   try {
+//     const response = await axios.get(endpoint);
+//     console.log("Full Lookup Data:", response.data.value); // Log entire response
+//     return response.data.value;
+//   } catch (error) {
+//     console.error("Error fetching lookup data:", error);
+//     return [];
+//   }
+// };
+
+// export const taskBreakdownProfilleDatalkp = async () => {
+//   return await fetchSharePointListItemslkp(SHAREPOINT_SITES.DATAINFA360, "Tasks");
+// };
+
+// taskBreakdownProfilleDatalkp();
 
 // Specific list fetching functions
 export const fetchCertificationTracker = async () => {
   return await fetchSharePointListItems(SHAREPOINT_SITES.SOLUTION_PRIVATE, "Certification Tracker");
 };
 
+// export const taskBreakdownProfilleData = async () => {
+//   return await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "Tasks");
+// };
+
 export const taskBreakdownProfilleData = async () => {
-  return await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "Tasks");
+  return await fetchSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "Tasks", [
+    "Customer",
+    "Internal",
+  ]);
 };
 
 // export const taskBreakdownProfilleData = async () => {

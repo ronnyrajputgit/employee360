@@ -820,6 +820,7 @@ const TaskbreakDown = () => {
     { Header: "Task Description", accessor: "TaskDescription", width: "30%" },
     { Header: "Task Type", accessor: "TaskType", width: "20%" },
     { Header: "Duration (hrs)", accessor: "Duration", width: "20%" },
+    { Header: "Created At ", accessor: "CreatedDateTime", width: "20%" },
   ];
 
   return (
@@ -831,6 +832,7 @@ const TaskbreakDown = () => {
           TaskDescription: task.TaskDescription,
           TaskType: task.TaskType,
           Duration: task.Duration,
+          CreatedDateTime: new Date(task.CreatedDateTime).toLocaleString(),
         }));
 
         return (
@@ -862,10 +864,11 @@ const TaskbreakDown = () => {
                 <CardContent>
                   <DataTable
                     table={{ columns, rows }}
-                    isSorted={false}
+                    isSorted={true}
                     entriesPerPage={true}
                     showTotalEntries={true}
                     noEndBorder
+                    canSearch={true}
                   />
                 </CardContent>
               </Card>

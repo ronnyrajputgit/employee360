@@ -192,7 +192,9 @@ const transformers = {
   tasks: (raw) =>
     raw.map((item) => ({
       ProjectType: item.fields?.ProjectType || "",
+      Customer: item.fields?.Customer || "",
       TaskName: item.fields?.Title || "",
+      Internal: item.fields?.Internal || "",
       TaskDescription: item.fields?.TaskDescription || "",
       TaskType: item.fields?.TaskType || "",
       createdBy: item.createdBy?.user?.displayName || "",
