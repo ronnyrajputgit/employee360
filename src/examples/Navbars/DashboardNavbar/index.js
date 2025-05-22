@@ -383,6 +383,39 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 fullWidth
               />
             </MDBox>
+            {/* customer fiter values like GE,Noc From task  sttart */}
+
+            <MDBox pr={1}>
+              <MDInput
+                sx={{
+                  m: 1,
+                  minWidth: 135,
+                  "& .MuiInputBase-root": {
+                    height: 40, // You can increase this value for more height
+                    borderRadius: 2,
+                  },
+                  "& .MuiSelect-select": {
+                    paddingTop: 1.5,
+                    paddingBottom: 1.5,
+                  },
+                }}
+                select
+                // size="small"
+                label="Select Project Task"
+                value={filters.customer}
+                onChange={(e) => updateFilter("customer", e.target.value)}
+                fullWidth
+              >
+                {console.log("filter options", filterOptions)}
+                <MenuItem value="">All Types</MenuItem>
+                {filterOptions.tasks?.customer?.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </MDInput>
+            </MDBox>
+            {/* customer fiter values like GE,Noc From task end */}
 
             <MDBox pr={1}>
               <MDInput

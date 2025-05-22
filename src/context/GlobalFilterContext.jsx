@@ -204,8 +204,9 @@ const transformers = {
     })),
   projects: (raw) =>
     raw.map((item) => ({
-      ...item,
+      // ...item,
       ProjectName: item.fields?.Title || "",
+      ProjectOwner: item.fields?.ProjectOwner || "",
       ProjectOwnerName: item.fields.ProjectManager || "",
       CreatedBy: item.createdBy?.user?.displayName || "",
       CreatedDateTime: item.createdDateTime || "",
@@ -227,6 +228,7 @@ const filterKeyMap = {
     taskType: "TaskType",
     createdBy: "createdBy",
     search: ["TaskName", "TaskDescription"],
+    customer: "Customer",
   },
   projects: {
     projectName: "ProjectName",
@@ -269,10 +271,12 @@ export const GlobalFilterProvider = ({ children }) => {
     createdBy: "",
     search: "",
     projectName: "",
+    customer: "",
   });
   const [filteredData, setFilteredData] = useState({});
   const [filterOptions, setFilterOptions] = useState({});
   const [loading, setLoading] = useState(true);
+  const [activeSource, setActiveSource] = useState({}); // New state for tracking active filters
 
   // Fetch and transform all APIs
   useEffect(() => {
@@ -315,11 +319,21 @@ export const GlobalFilterProvider = ({ children }) => {
   // Apply filters and sort
   useEffect(() => {
     const updated = {};
+    const newActiveSource = {};
+
     for (const key in rawData) {
       const filtered = applyFilters(rawData[key], filters, filterKeyMap[key] || {});
       updated[key] = sortByCreatedDateTime(filtered);
+
+      // Check if any filter is active for this source
+      const sourceFilters = filterKeyMap[key] || {};
+      newActiveSource[key] = Object.entries(filters).some(([fKey, fVal]) => {
+        return sourceFilters[fKey] && fVal !== "";
+      });
     }
+
     setFilteredData(updated);
+    setActiveSource(newActiveSource);
   }, [filters, rawData]);
 
   const updateFilter = (key, value) => {
@@ -334,6 +348,7 @@ export const GlobalFilterProvider = ({ children }) => {
         filteredData,
         filterOptions,
         loading,
+        activeSource, // Expose activeSource to consumers
       }}
     >
       {children}

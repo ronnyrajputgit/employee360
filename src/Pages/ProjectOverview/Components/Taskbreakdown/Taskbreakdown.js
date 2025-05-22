@@ -804,9 +804,12 @@ import { useGlobalFilters } from "context/GlobalFilterContext";
 import DataTable from "examples/Tables/DataTable";
 
 const TaskbreakDown = () => {
-  const { filteredData, loading } = useGlobalFilters();
+  const { filteredData, loading, activeSource } = useGlobalFilters();
   const tasks = filteredData.tasks || [];
-
+  console.log(tasks);
+  const StopShowingProjectData = activeSource.projects;
+  // Customer = NOC,GE,Tataplay ,ZS  Internal
+  console.log("i am  ", activeSource.projects);
   // Group by createdBy
   const groupedByUser = tasks.reduce((acc, task) => {
     const key = task.createdBy;
@@ -820,6 +823,11 @@ const TaskbreakDown = () => {
     acc[key].tasks.push(task);
     return acc;
   }, {});
+
+  // name ulta le ke rakhe hain taki kam shi se kre
+  if (StopShowingProjectData) {
+    return null;
+  }
 
   if (loading) {
     return (
@@ -848,7 +856,15 @@ const TaskbreakDown = () => {
           TaskDescription: task.TaskDescription,
           TaskType: task.TaskType,
           Duration: task.Duration,
-          CreatedDateTime: new Date(task.CreatedDateTime).toLocaleString(),
+          // CreatedDateTime: new Date(task.CreatedDateTime).toLocaleString(  ),
+          CreatedDateTime: new Date(task.CreatedDateTime).toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          }),
         }));
 
         return (
