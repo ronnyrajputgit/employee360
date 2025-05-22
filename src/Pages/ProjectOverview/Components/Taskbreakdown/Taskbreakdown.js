@@ -804,12 +804,10 @@ import { useGlobalFilters } from "context/GlobalFilterContext";
 import DataTable from "examples/Tables/DataTable";
 
 const TaskbreakDown = () => {
-  const { filteredData, loading, activeSource } = useGlobalFilters();
+  const { filteredData, loading } = useGlobalFilters();
   const tasks = filteredData.tasks || [];
-  console.log(tasks);
-  const StopShowingProjectData = activeSource.projects;
-  // Customer = NOC,GE,Tataplay ,ZS  Internal
-  console.log("i am  ", activeSource.projects);
+  // console.log(tasks);
+
   // Group by createdBy
   const groupedByUser = tasks.reduce((acc, task) => {
     const key = task.createdBy;
@@ -823,11 +821,6 @@ const TaskbreakDown = () => {
     acc[key].tasks.push(task);
     return acc;
   }, {});
-
-  // name ulta le ke rakhe hain taki kam shi se kre
-  if (StopShowingProjectData) {
-    return null;
-  }
 
   if (loading) {
     return (

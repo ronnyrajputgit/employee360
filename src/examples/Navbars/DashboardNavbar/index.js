@@ -375,14 +375,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
         {!isMini && (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
+            {/* <MDBox pr={1}>
               <MDInput
                 label="Search By Name"
                 value={filters.projectName}
                 onChange={(e) => updateFilter("projectName", e.target.value)}
                 fullWidth
               />
-            </MDBox>
+            </MDBox> */}
             {/* customer fiter values like GE,Noc From task  sttart */}
 
             <MDBox pr={1}>
@@ -402,13 +402,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 select
                 // size="small"
                 label="Select Project Task"
-                value={filters.customer}
-                onChange={(e) => updateFilter("customer", e.target.value)}
+                // value={filters.customer}
+                // onChange={(e) => updateFilter("customer", e.target.value)}
+                value={filters.createdBy}
+                onChange={(e) => updateFilter("createdBy", e.target.value)}
                 fullWidth
               >
-                {console.log("filter options", filterOptions)}
                 <MenuItem value="">All Types</MenuItem>
-                {filterOptions.tasks?.customer?.map((name) => (
+                {filterOptions.createdBy?.map((name) => (
                   <MenuItem key={name} value={name}>
                     {name}
                   </MenuItem>
@@ -439,7 +440,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 fullWidth
               >
                 <MenuItem value="">All Types</MenuItem>
-                {filterOptions.projects?.projectName?.map((name) => (
+                {filterOptions.projectName?.map((name) => (
                   <MenuItem key={name} value={name}>
                     {name}
                   </MenuItem>

@@ -432,10 +432,8 @@ import { useGlobalFilters } from "context/GlobalFilterContext";
 
 const Projectsongoing = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
-  const { filteredData, loading, activeSource } = useGlobalFilters();
+  const { filteredData, loading } = useGlobalFilters();
   const projectsData = filteredData.projects || [];
-
-  const StopShowingTaskData = activeSource.tasks;
 
   // console.log("i am active or inacttive ", activeSource.projects);
   // console.log(projectsData);
@@ -451,9 +449,6 @@ const Projectsongoing = () => {
     return null; // Don't render anything
   }
 
-  if (StopShowingTaskData) {
-    return null;
-  }
   // if activeSource is ttrue return null
 
   // if (!activeSource.projects) {
