@@ -416,7 +416,7 @@ const filterKeyMap = {
     createdBy: "CreatedBy",
     search: ["ProjectName", "ProjectOwner", "ProjectOwnerName"],
     customer: "", // No customer field in projects, so ignore
-    projectName: "ProjectName",
+    projectName: "ProjectName", //common name as key but their values original add kro
   },
 };
 
