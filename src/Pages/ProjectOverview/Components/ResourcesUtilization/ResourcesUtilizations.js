@@ -4216,9 +4216,6 @@ import {
   Divider,
   useTheme,
   CircularProgress,
-  ButtonGroup,
-  Button,
-  Stack,
 } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import {
@@ -4231,17 +4228,17 @@ import {
   Legend,
 } from "chart.js";
 import { useGlobalFilters } from "context/GlobalFilterContext";
+import MDButton from "components/MDButton";
+import MDBox from "components/MDBox";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-// LinearProgress with label component
 
 const ResourcesUtilization = () => {
   const { filteredData, loading } = useGlobalFilters();
   const resourcesData = filteredData.tasks || [];
   const theme = useTheme();
 
-  const [filter, setFilter] = useState("Weekly");
+  const [filter, setFilter] = useState("Project");
   const [groupedData, setGroupedData] = useState([]);
   const [summary, setSummary] = useState({
     totalBillable: 0,
@@ -4253,29 +4250,27 @@ const ResourcesUtilization = () => {
   useEffect(() => {
     let filteredResources = resourcesData;
 
+    const now = new Date();
     if (filter === "Weekly") {
       const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      oneWeekAgo.setDate(now.getDate() - 7);
       filteredResources = resourcesData.filter((item) => {
         const date = new Date(item.Date);
         return date >= oneWeekAgo;
       });
     } else if (filter === "Monthly") {
-      const now = new Date();
       filteredResources = resourcesData.filter((item) => {
         const date = new Date(item.Date);
         return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
       });
     } else if (filter === "Quarterly") {
-      const now = new Date();
       const quarter = Math.floor(now.getMonth() / 3);
       filteredResources = resourcesData.filter((item) => {
         const date = new Date(item.Date);
-        const itemQuarter = Math.floor(date.getMonth() / 3);
-        return itemQuarter === quarter && date.getFullYear() === now.getFullYear();
+        return (
+          Math.floor(date.getMonth() / 3) === quarter && date.getFullYear() === now.getFullYear()
+        );
       });
-    } else if (filter === "Project") {
-      filteredResources = resourcesData;
     }
 
     const grouped = {};
@@ -4287,7 +4282,6 @@ const ResourcesUtilization = () => {
       const createdBy = item.createdBy || "Unknown";
       const projectType = item.ProjectType || "";
       const duration = parseFloat(item.Duration) || 0;
-
       if (!customer) return;
 
       const key = `${customer}__${createdBy}`;
@@ -4310,18 +4304,48 @@ const ResourcesUtilization = () => {
     });
 
     const total = totalBillable + totalNonBillable;
-    const billablePercentage = total ? (totalBillable / total) * 100 : 0;
-    const nonBillablePercentage = total ? (totalNonBillable / total) * 100 : 0;
+    const billablePercentage = total ? Math.round((totalBillable / total) * 100) : 0;
+    const nonBillablePercentage = 100 - billablePercentage;
 
-    setSummary({
-      totalBillable,
-      totalNonBillable,
-      billablePercentage,
-      nonBillablePercentage,
-    });
-
+    setSummary({ totalBillable, totalNonBillable, billablePercentage, nonBillablePercentage });
     setGroupedData(Object.values(grouped));
   }, [resourcesData, filter]);
+
+  const chartData = {
+    labels: groupedData.map((r) => `${r.customer} → ${r.createdBy}`),
+    datasets: [
+      {
+        label: "Billable Hours",
+        data: groupedData.map((r) => r.billable),
+        backgroundColor: theme.palette.success.main,
+      },
+      {
+        label: "Non-Billable Hours",
+        data: groupedData.map((r) => r.nonBillable),
+        backgroundColor: theme.palette.error.main,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" },
+      title: {
+        display: true,
+        text: "Resource Utilization (Customer → Created By)",
+        font: { size: 18 },
+      },
+      tooltip: { mode: "index", intersect: false },
+    },
+    interaction: { mode: "nearest", axis: "x", intersect: false },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: "Hours" },
+      },
+    },
+  };
 
   if (loading) {
     return (
@@ -4331,198 +4355,114 @@ const ResourcesUtilization = () => {
     );
   }
 
-  // Enhanced chart data with opacity colors and rounded bars
-  const chartData = {
-    labels: groupedData.map((r) => `${r.customer} → ${r.createdBy}`),
-    datasets: [
-      {
-        label: "Billable Hours",
-        data: groupedData.map((r) => r.billable),
-        backgroundColor: "rgba(76, 175, 80, 0.8)", // green with opacity
-        borderRadius: 6,
-        borderSkipped: false,
-        shadowOffsetX: 2,
-        shadowOffsetY: 2,
-        shadowBlur: 4,
-        shadowColor: "rgba(0,0,0,0.15)",
-      },
-      {
-        label: "Non-Billable Hours",
-        data: groupedData.map((r) => r.nonBillable),
-        backgroundColor: "rgba(244, 67, 54, 0.8)", // red with opacity
-        borderRadius: 6,
-        borderSkipped: false,
-      },
-    ],
-  };
-
-  // Chart options with improved styling
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          font: { size: 14 },
-          padding: 20,
-          boxWidth: 18,
-          boxHeight: 18,
-          usePointStyle: true,
-          pointStyle: "rectRounded",
-        },
-      },
-      title: {
-        display: true,
-        text: "Resource Utilization (Customer → Created By)",
-        font: { size: 20, weight: "bold" },
-        padding: { top: 10, bottom: 20 },
-      },
-      tooltip: {
-        mode: "index",
-        intersect: false,
-        backgroundColor: theme.palette.background.paper,
-        titleColor: theme.palette.text.primary,
-        bodyColor: theme.palette.text.secondary,
-        borderColor: theme.palette.divider,
-        borderWidth: 1,
-      },
-    },
-    interaction: {
-      mode: "nearest",
-      axis: "x",
-      intersect: false,
-    },
-    scales: {
-      x: {
-        stacked: false,
-        ticks: {
-          maxRotation: 45,
-          minRotation: 45,
-          font: { size: 12 },
-          color: theme.palette.text.primary,
-        },
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        stacked: false,
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: "Hours",
-          font: { size: 14, weight: "bold" },
-          color: theme.palette.text.primary,
-        },
-        ticks: {
-          font: { size: 12 },
-          color: theme.palette.text.secondary,
-          stepSize: 5,
-        },
-        grid: {
-          borderDash: [5, 5],
-          color: theme.palette.divider,
-        },
-      },
-    },
-  };
-
   return (
     <Box p={3}>
       <Grid container spacing={3}>
-        {/* Filter Button Group */}
+        {/* Filter Buttons */}
         <Grid item xs={12}>
           <Card>
-            <Box p={2}>
+            <MDBox p={2}>
               <Grid container spacing={2}>
-                {["Weekly", "Monthly", "Quarterly", "Project"].map((label) => (
-                  <Grid item xs={12} sm={6} md={3} key={label}>
-                    <Button
+                {["Project", "Weekly", "Monthly", "Quarterly"].map((label) => (
+                  <Grid item xs={6} sm={3} key={label}>
+                    <MDButton
                       variant={filter === label ? "contained" : "outlined"}
                       color={filter === label ? "info" : "secondary"}
                       fullWidth
                       onClick={() => setFilter(label)}
-                      sx={{ fontWeight: "bold" }}
                     >
                       {label}
-                    </Button>
+                    </MDButton>
                   </Grid>
                 ))}
               </Grid>
-            </Box>
+            </MDBox>
           </Card>
         </Grid>
 
         {/* Summary Cards */}
-        <Grid item xs={12} md={6}>
-          <Card elevation={6} sx={{ bgcolor: theme.palette.success.light + "33" }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Total Billable Hours
-              </Typography>
-              <Typography variant="h3" color="success.main" fontWeight="bold">
-                {summary.totalBillable.toFixed(1)}
-              </Typography>
-              {/* <LinearProgressWithLabel value={summary.billablePercentage} color="success" /> */}
-              <Typography variant="body2" color="text.secondary" mt={1}>
-                Percentage of billable hours out of total hours
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card elevation={6} sx={{ bgcolor: theme.palette.error.light + "33" }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Total Non-Billable Hours
-              </Typography>
-              <Typography variant="h3" color="error.main" fontWeight="bold">
-                {summary.totalNonBillable.toFixed(1)}
-              </Typography>
-              {/* <LinearProgressWithLabel value={summary.nonBillablePercentage} color="error" /> */}
-              <Typography variant="body2" color="text.secondary" mt={1}>
-                Percentage of non-billable hours out of total hours
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+        {[
+          ["Total Billable Hours", summary.totalBillable, summary.billablePercentage, "success"],
+          [
+            "Total Non-Billable Hours",
+            summary.totalNonBillable,
+            summary.nonBillablePercentage,
+            "error",
+          ],
+        ].map(([title, value, percentage, color], idx) => (
+          <Grid item xs={12} md={6} key={idx}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{title}</Typography>
+                <Typography variant="h4" color={color}>
+                  {value.toFixed(1)}
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={percentage}
+                  sx={{
+                    height: 10,
+                    borderRadius: 5,
+                    mt: 1,
+                    backgroundColor: theme.palette.grey[300],
+                    "& .MuiLinearProgress-bar": {
+                      backgroundColor: theme.palette[color].main,
+                    },
+                  }}
+                />
+                <Typography variant="body2" color="textSecondary" mt={0.5}>
+                  {percentage}% {color === "success" ? "Billable" : "Non-Billable"}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
 
         {/* Chart */}
         <Grid item xs={12}>
-          <Card elevation={6}>
+          <Card>
             <CardContent>
               <Bar options={chartOptions} data={chartData} redraw />
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Breakdown */}
+        {/* Breakdown Section */}
         <Grid item xs={12}>
-          <Card elevation={6}>
+          <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom fontWeight="bold">
+              <Typography variant="h6" gutterBottom>
                 Breakdown by Customer and User
               </Typography>
               {groupedData.map((item, idx) => {
                 const total = item.billable + item.nonBillable;
-                const billablePercent = total ? (item.billable / total) * 100 : 0;
-                const nonBillablePercent = total ? (item.nonBillable / total) * 100 : 0;
-
+                const percent = total ? Math.round((item.billable / total) * 100) : 0;
                 return (
                   <Box key={idx} mb={3}>
-                    <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
+                    <Typography variant="subtitle1">
                       {item.customer} → {item.createdBy}
                     </Typography>
-                    {/* <LinearProgressWithLabel value={billablePercent} color="success" /> */}
-                    <Stack direction="row" justifyContent="space-between" mt={0.5}>
-                      <Typography variant="body2" color="success.main">
-                        ✅ {item.billable.toFixed(1)} hrs ({billablePercent.toFixed(1)}%)
+                    <LinearProgress
+                      variant="determinate"
+                      value={percent}
+                      sx={{
+                        height: 10,
+                        borderRadius: 5,
+                        backgroundColor: theme.palette.grey[300],
+                        "& .MuiLinearProgress-bar": {
+                          backgroundColor: theme.palette.success.main,
+                        },
+                      }}
+                    />
+                    <Box display="flex" justifyContent="space-between" mt={0.5}>
+                      <Typography variant="body2">
+                        ✅ {item.billable.toFixed(1)} hrs ({percent}%)
                       </Typography>
-                      <Typography variant="body2" color="error.main">
-                        ❌ {item.nonBillable.toFixed(1)} hrs ({nonBillablePercent.toFixed(1)}%)
+                      <Typography variant="body2">
+                        ❌ {item.nonBillable.toFixed(1)} hrs ({100 - percent}%)
                       </Typography>
-                    </Stack>
-                    {idx !== groupedData.length - 1 && <Divider sx={{ mt: 2 }} />}
+                    </Box>
+                    {idx < groupedData.length - 1 && <Divider sx={{ mt: 2 }} />}
                   </Box>
                 );
               })}
