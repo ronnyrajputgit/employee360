@@ -4529,18 +4529,18 @@ const ResourcesUtilization = () => {
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(now.getDate() - 7);
       filteredResources = resourcesData.filter((item) => {
-        const date = new Date(item.Date);
+        const date = new Date(item.CreatedDateTime);
         return date >= oneWeekAgo;
       });
     } else if (filter === "Monthly") {
       filteredResources = resourcesData.filter((item) => {
-        const date = new Date(item.Date);
+        const date = new Date(item.CreatedDateTime);
         return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
       });
     } else if (filter === "Quarterly") {
       const quarter = Math.floor(now.getMonth() / 3);
       filteredResources = resourcesData.filter((item) => {
-        const date = new Date(item.Date);
+        const date = new Date(item.CreatedDateTime);
         return (
           Math.floor(date.getMonth() / 3) === quarter && date.getFullYear() === now.getFullYear()
         );
