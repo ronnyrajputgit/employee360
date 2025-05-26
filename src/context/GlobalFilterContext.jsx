@@ -84,12 +84,9 @@ const filterKeyMap = {
     projectName: "ProjectName", //common name as key but their values original add kro
   },
   // add new filter keys here
-  // skillsInventry: {
-  //   createdBy: "CreatedBy",
-  //   search: ["SkillName", "SkillType", "SkillLevel"],
-  //   customer: "", // No customer field in projects, so ignore
-  //   projectName: "SkillName", //common name as key but their values original add kro
-  // },
+  skillsInventry: {
+    createdBy: "CreatedBy",
+  },
 };
 
 // Helper to get unique values from combined data for filter dropdowns
