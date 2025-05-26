@@ -401,7 +401,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 }}
                 select
                 // size="small"
-                label="Select Project Task"
+                label="Select Created By"
                 // value={filters.customer}
                 // onChange={(e) => updateFilter("customer", e.target.value)}
                 value={filters.createdBy}
@@ -434,7 +434,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 }}
                 select
                 // size="small"
-                label="Select Project Type"
+                label="Select Company"
                 value={filters.projectName}
                 onChange={(e) => updateFilter("projectName", e.target.value)}
                 fullWidth
@@ -447,7 +447,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 ))}
               </MDInput>
             </MDBox>
-            <MDBox pr={1}>
+            {/* <MDBox pr={1}>
               <MDInput
                 sx={{
                   m: 1,
@@ -476,7 +476,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   </MenuItem>
                 ))}
               </MDInput>
-            </MDBox>
+            </MDBox> */}
 
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/authentication/sign-in/basic">

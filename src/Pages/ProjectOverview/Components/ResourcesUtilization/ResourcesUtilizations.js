@@ -4236,6 +4236,9 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const ResourcesUtilization = () => {
   const { filteredData, loading } = useGlobalFilters();
   const resourcesData = filteredData.tasks || [];
+  // console.log(resourcesData);
+  // console.log("resourcesData example:", resourcesData.slice(0, 5));
+
   const theme = useTheme();
 
   const [filter, setFilter] = useState("Project");
