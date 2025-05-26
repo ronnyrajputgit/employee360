@@ -806,7 +806,8 @@ import DataTable from "examples/Tables/DataTable";
 const TaskbreakDown = () => {
   const { filteredData, loading } = useGlobalFilters();
   const tasks = filteredData.tasks || [];
-  // console.log(tasks);
+  const tasks1 = filteredData.skillsInventry || [];
+  console.log(tasks1);
 
   // Group by createdBy
   const groupedByUser = tasks.reduce((acc, task) => {

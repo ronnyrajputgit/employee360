@@ -1,5 +1,5 @@
-// just for testing
-
+import { fetchSkillInventoryData } from "apis/sharepointApi";
+import { listAllListsFromSite } from "apis/sharepointApi";
 import { fetchCertificationTracker } from "apis/sharepointApi";
 import React, { useState } from "react";
 
@@ -13,8 +13,11 @@ const SharePointData = () => {
     setError("");
 
     try {
-      const result = await fetchCertificationTracker();
-      setData(result);
+      // const result = await listAllListsFromSite();
+      const result2 = await fetchSkillInventoryData();
+      // console.log(result);
+      console.log(result2);
+      setData(result2);
     } catch (err) {
       console.error(err);
       setError("Failed to fetch SharePoint data.");

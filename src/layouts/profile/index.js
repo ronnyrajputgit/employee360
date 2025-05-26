@@ -43,6 +43,7 @@ import AttendanceInforemation from "./components/AttendanceInfo/AttendanceInfo";
 import AttendanceInfo from "./components/AttendanceInfo/AttendanceInfo";
 import HierarchyInfo from "./components/HierarchyInfo/HierarchyInfo";
 import TaskCompleted from "./components/TaskCompleted/TaskCompleted";
+import SharePointData from "Pages/ProjectOverview/SharePointData";
 
 function Overview() {
   return (
@@ -51,6 +52,7 @@ function Overview() {
       <MDBox mb={2} />
       <Header>
         <MDBox mt={5} mb={3}>
+          {/* <SharePointData /> */}
           <PersonalInfo />
           {/* certification details */}
           <CertificationCards />

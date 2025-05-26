@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { taskBreakdownProfilleData, fetchTaskListsData } from "apis/sharepointApi";
 import { getAccessToken } from "auth/authProvider";
+import { fetchSkillInventoryData } from "apis/sharepointApi";
 
 const GlobalFilterContext = createContext();
 
@@ -11,6 +12,8 @@ const GlobalFilterContext = createContext();
 const apiMap = {
   tasks: taskBreakdownProfilleData,
   projects: fetchTaskListsData,
+  // add new apis here
+  skillsInventry: fetchSkillInventoryData,
 };
 
 // Transformers
@@ -43,6 +46,26 @@ const transformers = {
         photoUrl: `https://datainfasolpvtltd.sharepoint.com/sites/DataINFA360/_layouts/15/userphoto.aspx?size=S&username=${member.Email}`,
       })),
     })),
+
+  // add new transformers here
+  skillsInventry: (raw) =>
+    raw.map((item) => ({
+      // ...item.fields,
+      EmployeeId: item.fields?.Title || "",
+      Resource: item.fields?.Resource || "",
+      TotalDurationinMonths: item.fields?.TotalDurationinMonths || "",
+      SkillStatus: item.fields?.SkillStatus || "",
+      SkillsPoints: item.fields?.Skill_x0020_Points || "",
+      Skill: item.fields?.Skill || "",
+      RecentInterviewResult: item.fields?.RecentInterviewResult || "",
+      RealProjectExperience: item.fields?.RealProjectExperience || "",
+      ProjectExperience: item.fields?.ProjectExperience || "",
+      TrainingCompleted: item.fields?.TrainingCompleted || "",
+      Certified: item.fields?.Certified || "",
+      MockProjectsShadowing: item.fields?.MockProjects_x002f_Shadowing || "",
+      CreatedAt: item.fields?.Created || "",
+      CreatedBy: item.createdBy?.user?.displayName || "",
+    })),
 };
 
 // Unified filter key mapping for both datasets
@@ -60,6 +83,13 @@ const filterKeyMap = {
     customer: "", // No customer field in projects, so ignore
     projectName: "ProjectName", //common name as key but their values original add kro
   },
+  // add new filter keys here
+  // skillsInventry: {
+  //   createdBy: "CreatedBy",
+  //   search: ["SkillName", "SkillType", "SkillLevel"],
+  //   customer: "", // No customer field in projects, so ignore
+  //   projectName: "SkillName", //common name as key but their values original add kro
+  // },
 };
 
 // Helper to get unique values from combined data for filter dropdowns
