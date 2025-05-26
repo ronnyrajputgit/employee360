@@ -1138,6 +1138,16 @@ function ProjectOverview() {
 
   // add here you compinent in this way
   const sectionMap = {
+    taskBreakdown: {
+      title: "Task Breakdown by Resources",
+      icon: <Checklist />,
+      component: <Taskbreakdown />,
+    },
+    utilization: {
+      title: "Resource Utilization",
+      icon: <PieChart />,
+      component: <ResourcesUtilizations />,
+    },
     milestones: {
       title: "Major Milestones",
       icon: <EmojiFlags />,
@@ -1148,16 +1158,6 @@ function ProjectOverview() {
       icon: <CalendarMonth />,
       component: <ProjectTimeline />,
       showChips: true, // for Month/Week/Day chips
-    },
-    taskBreakdown: {
-      title: "Task Breakdown by Resources",
-      icon: <Checklist />,
-      component: <Taskbreakdown />,
-    },
-    utilization: {
-      title: "Resource Utilization",
-      icon: <PieChart />,
-      component: <ResourcesUtilizations />,
     },
   };
 

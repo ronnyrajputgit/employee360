@@ -307,6 +307,8 @@ export const getUserProfile = async () => {
     const profile = await profileResponse.json();
     // console.log(profile?.displayName);
     localStorage.setItem("currentName", profile?.displayName);
+    // setloca storage using use effect
+
     // Fetch profile photo
     let photoUrl = DEFAULT_PROFILE_IMAGE;
     try {
