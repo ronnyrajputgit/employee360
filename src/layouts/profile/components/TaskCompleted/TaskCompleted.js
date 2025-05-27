@@ -827,7 +827,7 @@ const TasksCompleted = () => {
         left: 0,
         width: "100%",
         height: isFullscreen ? "100vh" : "auto",
-        bgcolor: isFullscreen ? "#fff" : "#f0f8ff",
+        // bgcolor: isFullscreen ? "#fff" : "#f0f8ff",
         zIndex: isFullscreen ? 9999 : "auto",
         overflow: "auto",
         transition: "all 0.3s ease-in-out",
@@ -836,7 +836,13 @@ const TasksCompleted = () => {
     >
       <AppBar
         position="static"
-        sx={{ backgroundColor: "#fff", color: "#333", boxShadow: "0 2px 4px rgba(0,0,0,.08)" }}
+        // sx={{ backgroundColor: "#fff", color: "#333", boxShadow: "0 2px 4px rgba(0,0,0,.08)" }}
+        sx={{
+          backgroundColor: "#fff",
+          color: "#333",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          borderRadius: "12px", // Rounded corners
+        }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>

@@ -58,7 +58,7 @@ export const fetchTaskListsData = async () => {
 //   return await fetchAllSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "SkillsInventory");
 // };
 export const fetchSkillInventoryData = async () => {
-  return await fetchAllSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "Inhouse Skills", [
+  return await fetchAllSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "SkillsInventory", [
     "Resource",
     "Skill",
     "ProjectExperience",

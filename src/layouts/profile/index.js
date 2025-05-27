@@ -55,12 +55,12 @@ function Overview() {
           {/* <SharePointData /> */}
           <PersonalInfo />
           {/* certification details */}
+          <TaskCompleted />
+          <SkillSets />
           <CertificationCards />
           <Achievement />
           <UtilizationMetrics />
           <Compliments />
-          <SkillSets />
-          <TaskCompleted />
           <AttendanceInfo />
           <HierarchyInfo />
         </MDBox>
