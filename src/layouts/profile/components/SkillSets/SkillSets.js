@@ -347,10 +347,9 @@ import {
   IconButton,
   Collapse,
   Badge,
-  AppBar,
-  Toolbar,
   useTheme,
   useMediaQuery,
+  Paper,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -470,12 +469,17 @@ const SkillSets = () => {
       <Typography color="inherit" variant="subtitle2" gutterBottom>
         Skill Details
       </Typography>
-      <div>Status: {skillData.SkillStatus}</div>
+      {/* <div>Status: {skillData.SkillStatus}</div> */}
       <div>Months Experience: {skillData.TotalDurationinMonths}</div>
+      <div>Skill Points: {skillData.SkillsPoints}</div>
       <div>Training Completed: {skillData.TrainingCompleted ? "Yes" : "No"}</div>
-      <div>Certified: {skillData.Certified ? "Yes" : "No"}</div>
+      <div>Recent Interview: {skillData.RecentInterviewResult ? "Yes" : "No"}</div>
+      <div>Real Project Experience: {skillData.RealProjectExperience ? "Yes" : "No"}</div>
+      {/* <div>Certified: {skillData.Certified ? "Yes" : "No"}</div> */}
       <div>Mock Projects: {skillData.MockProjectsShadowing ? "Yes" : "No"}</div>
-      <div>Created By: {skillData.CreatedBy}</div>
+      {/* <div>Created By: {skillData.CreatedBy}</div> */}
+
+      <div>Created At: {new Date(skillData.CreatedAt).toLocaleDateString()}</div>
     </Box>
   );
 
@@ -486,7 +490,7 @@ const SkillSets = () => {
 
   // Main content grid
   const Content = (
-    <Grid container spacing={3} sx={{ mt: 0, p: isMobile ? 1 : 3 }}>
+    <Grid container sx={{ mt: 0, p: isMobile ? 1 : 3 }}>
       {filteredResources.length > 0 ? (
         filteredResources.map(([resource, skills]) => {
           const interviewReadySkills = skills.filter((skill) => skill.RecentInterviewResult).length;
@@ -499,31 +503,15 @@ const SkillSets = () => {
                   <Badge
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  >
-                    <Avatar
-                      sx={{
-                        bgcolor: "primary.main",
-                        mr: 2,
-                        width: 56,
-                        height: 56,
-                        fontSize: "1.5rem",
-                        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
-                      }}
-                    >
-                      {resource
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </Avatar>
-                  </Badge>
-                  <Box sx={{ flexGrow: 1 }}>
+                  ></Badge>
+                  {/* <Box sx={{ flexGrow: 1 }}>
                     <Typography variant="h6" component="div" fontWeight="600">
                       {resource}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       {skills[0].EmployeeId}
                     </Typography>
-                  </Box>
+                  </Box> */}
                   <IconButton
                     onClick={() => handleExpandClick(resource)}
                     aria-expanded={expandedCards[resource]}
@@ -533,7 +521,7 @@ const SkillSets = () => {
                       transition: "transform 0.3s",
                     }}
                   >
-                    <ExpandMore />
+                    <ExpandMore /> 😇
                   </IconButton>
                 </HeaderBox>
 
@@ -598,11 +586,14 @@ const SkillSets = () => {
                       Additional Info
                     </Typography>
                     <Typography variant="body2" color="text.secondary" paragraph>
+                      Project Experience: {skills[0].ProjectExperience}
+                    </Typography>
+                    {/* <Typography variant="body2" color="text.secondary" paragraph>
                       Created by: {skills[0].CreatedBy}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    </Typography> */}
+                    {/* <Typography variant="body2" color="text.secondary">
                       Last updated: {new Date(skills[0].CreatedAt).toLocaleDateString()}
-                    </Typography>
+                    </Typography> */}
                   </CardContent>
                 </Collapse>
               </StyledCard>
@@ -619,7 +610,7 @@ const SkillSets = () => {
               height: "200px",
               backgroundColor: "#f5f5f5",
               borderRadius: "16px",
-              p: 4,
+              // p: 4,
             }}
           >
             <Typography variant="h6" color="textSecondary">
@@ -659,27 +650,34 @@ const SkillSets = () => {
         p: fullscreen ? 2 : 3,
       }}
     >
-      <AppBar
-        position="static"
-        color="default"
-        elevation={1}
-        sx={{
-          backgroundColor: "#fff",
-          color: "#333",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-          borderRadius: "12px",
-        }}
-      >
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Skills Inventory
+      {/* header like certificatio */}
+      <Box>
+        <Paper
+          elevation={3}
+          sx={{
+            borderRadius: 2,
+            p: 1,
+            background: "linear-gradient(to right,rgb(8, 13, 17), #3498db)",
+            mb: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
+            👨🏻‍💻 Skills Inventory
           </Typography>
-          <IconButton onClick={() => setFullscreen((prev) => !prev)} color="inherit">
-            {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Box sx={{ mt: 2 }}>{Content}</Box>
+
+          <Box sx={{ color: "white", fontSize: 20, cursor: "pointer" }}>
+            <IconButton onClick={() => setFullscreen((prev) => !prev)} color="inherit">
+              {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            </IconButton>
+          </Box>
+        </Paper>
+
+        {/* {certificationContent} */}
+      </Box>
+      <Box>{Content}</Box>
     </Box>
   );
 };
