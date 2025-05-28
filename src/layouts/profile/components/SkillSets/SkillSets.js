@@ -559,7 +559,8 @@ const SkillSets = () => {
                       >
                         <SkillChip
                           icon={skillData.Certified ? <Verified fontSize="small" /> : null}
-                          label={`${skillData.Skill} (${skillData.SkillsPoints})`}
+                          // label={`${skillData.Skill} (${skillData.SkillsPoints})`}
+                          label={`${skillData.Skill}`}
                           color={skillData.RecentInterviewResult ? "success" : "default"}
                           variant={skillData.RecentInterviewResult ? "filled" : "outlined"}
                           sx={{
