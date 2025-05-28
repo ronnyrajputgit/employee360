@@ -4490,6 +4490,7 @@ import {
   Divider,
   useTheme,
   CircularProgress,
+  Paper,
 } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import {
@@ -4585,6 +4586,30 @@ const ResourcesUtilization = () => {
     setGroupedData(Object.values(grouped));
   }, [resourcesData, filter]);
 
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
+
+  // Check if there are no records
+  if (resourcesData.length === 0 || groupedData.length === 0) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="60vh" p={2}>
+        <Paper elevation={3} sx={{ p: 4, textAlign: "center" }}>
+          <Typography variant="h6" color="textSecondary">
+            No records found
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            There are no resource utilization data available to display.
+          </Typography>
+        </Paper>
+      </Box>
+    );
+  }
+
   // Show top 12 bars for readability
   const topBars = groupedData
     .sort((a, b) => b.billable + b.nonBillable - (a.billable + a.nonBillable))
@@ -4665,14 +4690,6 @@ const ResourcesUtilization = () => {
     layout: { padding: 20 },
     animation: { duration: 800, easing: "easeOutQuart" },
   };
-
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
-        <CircularProgress color="primary" />
-      </Box>
-    );
-  }
 
   return (
     <Box p={3}>

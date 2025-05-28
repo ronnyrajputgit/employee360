@@ -788,29 +788,17 @@
 // export default TaskbreakDown;
 
 import React from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  Grid,
-  Avatar,
-  Card,
-  CardContent,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Typography, Paper, Avatar, Card, CardContent, CircularProgress } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import MDBox from "components/MDBox";
 import { useGlobalFilters } from "context/GlobalFilterContext";
 import DataTable from "examples/Tables/DataTable";
 
 const TaskbreakDown = () => {
   const { filteredData, loading } = useGlobalFilters();
-  const tasks = filteredData.tasks || [];
-  const tasks1 = filteredData.skillsInventry || [];
-  console.log(tasks1);
+  const tasksBreakDownData = filteredData.tasks || [];
 
   // Group by createdBy
-  const groupedByUser = tasks.reduce((acc, task) => {
+  const groupedByUser = tasksBreakDownData.reduce((acc, task) => {
     const key = task.createdBy;
     if (!acc[key]) {
       acc[key] = {
@@ -830,7 +818,24 @@ const TaskbreakDown = () => {
       </Box>
     );
   }
+
   const groupedUsers = Object.values(groupedByUser);
+
+  // Check if there are no records
+  if (groupedUsers.length === 0) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="60vh" p={2}>
+        <Paper elevation={3} sx={{ p: 4, textAlign: "center" }}>
+          <Typography variant="h6" color="textSecondary">
+            No records found
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            There are no tasks available to display.
+          </Typography>
+        </Paper>
+      </Box>
+    );
+  }
 
   // Define reusable columns for the DataTable
   const columns = [
@@ -850,7 +855,6 @@ const TaskbreakDown = () => {
           TaskDescription: task.TaskDescription,
           TaskType: task.TaskType,
           Duration: task.Duration,
-          // CreatedDateTime: new Date(task.CreatedDateTime).toLocaleString(  ),
           CreatedDateTime: new Date(task.CreatedDateTime).toLocaleString("en-GB", {
             day: "2-digit",
             month: "2-digit",
