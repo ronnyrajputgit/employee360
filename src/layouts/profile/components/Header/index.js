@@ -160,7 +160,7 @@ import MDAvatar from "components/MDAvatar";
 import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
-import backgroundImage from "assets/images/bg-profile.jpeg";
+import backgroundImage from "assets/images/bg-profile.jpg";
 
 // Auth helper
 import { getUserProfile } from "auth/getUserProfile";
@@ -202,8 +202,8 @@ function Header({ children }) {
         borderRadius="xl"
         sx={({ functions: { rgba, linearGradient }, palette: { gradients } }) => ({
           backgroundImage: `${linearGradient(
-            rgba(gradients.info.main, 0.6),
-            rgba(gradients.info.state, 0.6)
+            rgba(gradients.info.main, 0.3),
+            rgba(gradients.info.state, 0.2)
           )}, url(${backgroundImage})`,
           backgroundSize: "cover",
           backgroundPosition: "50%",
