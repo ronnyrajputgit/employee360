@@ -885,6 +885,712 @@
 
 // export default CertificationCards;
 
+// import React, { useState } from "react";
+// import {
+//   Card,
+//   CardContent,
+//   Typography,
+//   Grid,
+//   Button,
+//   Chip,
+//   Box,
+//   Paper,
+//   IconButton,
+//   Tooltip,
+// } from "@mui/material";
+// import {
+//   Fullscreen as FullscreenIcon,
+//   FullscreenExit as FullscreenExitIcon,
+// } from "@mui/icons-material";
+// import { useGlobalFilters } from "context/GlobalFilterContext";
+
+// const getStatusStyle = (skillStatus) => {
+//   const statusMap = {
+//     "Shadow Project": {
+//       label: "Shadow Project",
+//       color: "warning", // Yellow
+//     },
+//     "Training Needed": {
+//       label: "Training Needed",
+//       color: "error", // Red
+//     },
+//     "Interview Ready": {
+//       label: "Interview Ready",
+//       color: "success", // Green
+//     },
+//   };
+
+//   return {
+//     label: statusMap[skillStatus]?.label || skillStatus,
+//     color: statusMap[skillStatus]?.color || "default",
+//     variant: "outlined",
+//     size: "small",
+//     sx: { fontWeight: "bold", mt: 1 },
+//   };
+// };
+
+// const SkillSets = () => {
+//   const { filteredData } = useGlobalFilters();
+//   const skillsInventoryData = filteredData.skillsInventry || [];
+//   const [fullscreen, setFullscreen] = useState(false);
+//   const [currentName, setCurrentName] = useState(() => {
+//     try {
+//       const profile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
+//       return (profile.displayName || "").trim().toLowerCase();
+//     } catch (e) {
+//       return "";
+//     }
+//   });
+
+//   const [roleBasedUser, setRoleBasedUser] = useState(() => {
+//     try {
+//       const profile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
+//       return (profile.jobTitle || "").trim().toLowerCase();
+//     } catch (e) {
+//       return "";
+//     }
+//   });
+
+//   // alert(roleBasedUser);
+//   // alert(currentName);
+//   // Filter skills for current user and map to certification-like format
+//   const certifications = skillsInventoryData
+//     .filter((skill) => skill.Resource.toLowerCase() === currentName.toLowerCase())
+//     .map((skill) => ({
+//       title: skill.Skill,
+//       rating: `Rating - ${skill.SkillsPoints} / 10`,
+//       issued: new Date(skill.CreatedAt).toLocaleDateString(),
+//       status: skill.SkillStatus,
+//       details: {
+//         monthsExperience: skill.TotalDurationinMonths,
+//         trainingCompleted: skill.TrainingCompleted ? "Yes" : "No",
+//         realProjectExperience: skill.RealProjectExperience ? "Yes" : "No",
+//         mockProjects: skill.MockProjectsShadowing ? "Yes" : "No",
+//         certified: skill.Certified ? "Yes" : "No",
+//         skillStatus: skill.SkillStatus,
+//       },
+//     }));
+
+//   const renderTooltipContent = (details) => (
+//     <Box sx={{ p: 1 }}>
+//       <Typography variant="subtitle2" gutterBottom>
+//         Skill Details
+//       </Typography>
+//       {/* <div>Status: {details.skillStatus}</div> */}
+//       <div>Months Experience: {details.monthsExperience}</div>
+//       <div>Training Completed: {details.trainingCompleted}</div>
+//       <div>Real Project Experience: {details.realProjectExperience}</div>
+//       <div>Mock Projects: {details.mockProjects}</div>
+//       <div>Certified: {details.certified}</div>
+//     </Box>
+//   );
+
+//   const certificationContent = (
+//     <Grid container spacing={3}>
+//       {certifications.map((cert, index) => {
+//         const statusProps = getStatusStyle(cert.status);
+//         return (
+//           <Grid item xs={12} sm={6} md={4} key={index}>
+//             <Card
+//               elevation={4}
+//               sx={{
+//                 height: "100%",
+//                 display: "flex",
+//                 flexDirection: "column",
+//                 justifyContent: "space-between",
+//                 borderRadius: 3,
+//               }}
+//             >
+//               <CardContent sx={{ display: "flex", flexDirection: "column" }}>
+//                 <Typography variant="h6" fontWeight="bold" sx={{ color: "#2c3e50", mb: 1 }}>
+//                   {cert.title}
+//                 </Typography>
+//                 <Chip {...statusProps} />
+
+//                 <Typography variant="body2" color="text.secondary" mt={2}>
+//                   {cert.rating}
+//                 </Typography>
+//                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+//                   Last Evaluated: {cert.issued}
+//                 </Typography>
+//                 <Tooltip title={renderTooltipContent(cert.details)} arrow>
+//                   <Button variant="text" fullWidth sx={{ color: "secondary" }}>
+//                     View Details
+//                   </Button>
+//                 </Tooltip>
+//               </CardContent>
+//             </Card>
+//           </Grid>
+//         );
+//       })}
+//     </Grid>
+//   );
+
+//   return (
+//     <Box
+//       sx={{
+//         position: fullscreen ? "fixed" : "relative",
+//         top: 0,
+//         left: 0,
+//         width: "100%",
+//         height: fullscreen ? "100vh" : "auto",
+//         bgcolor: fullscreen ? "#fff" : "transparent",
+//         zIndex: fullscreen ? 9999 : "auto",
+//         overflow: "auto",
+//         transition: "all 0.3s ease-in-out",
+//         p: fullscreen ? 2 : 3,
+//       }}
+//     >
+//       <Paper
+//         elevation={3}
+//         sx={{
+//           borderRadius: 2,
+//           p: 2,
+//           background: "linear-gradient(to right,rgb(8, 13, 17), #3498db)",
+//           mb: 3,
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "space-between",
+//         }}
+//       >
+//         <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
+//           👨🏽‍💻 Skills Inventory
+//         </Typography>
+//         <IconButton
+//           onClick={() => setFullscreen(!fullscreen)}
+//           color="inherit"
+//           sx={{ color: "white" }}
+//         >
+//           {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+//         </IconButton>
+//       </Paper>
+
+//       {certifications.length > 0 ? (
+//         certificationContent
+//       ) : (
+//         <Box
+//           sx={{
+//             display: "flex",
+//             justifyContent: "center",
+//             alignItems: "center",
+//             height: "200px",
+//             backgroundColor: "#f5f5f5",
+//             borderRadius: "16px",
+//           }}
+//         >
+//           <Typography variant="h6" color="textSecondary">
+//             No skills found for {currentName || "the current resource"}
+//           </Typography>
+//         </Box>
+//       )}
+//     </Box>
+//   );
+// };
+
+// export default SkillSets;
+
+// import React, { useState } from "react";
+// import {
+//   Card,
+//   CardContent,
+//   Typography,
+//   Grid,
+//   Button,
+//   Chip,
+//   Box,
+//   Paper,
+//   IconButton,
+//   Tooltip,
+// } from "@mui/material";
+// import {
+//   Fullscreen as FullscreenIcon,
+//   FullscreenExit as FullscreenExitIcon,
+// } from "@mui/icons-material";
+// import { useGlobalFilters } from "context/GlobalFilterContext";
+
+// const getStatusStyle = (skillStatus) => {
+//   const statusMap = {
+//     "Shadow Project": {
+//       label: "Shadow Project",
+//       color: "warning", // Yellow
+//     },
+//     "Training Needed": {
+//       label: "Training Needed",
+//       color: "error", // Red
+//     },
+//     "Interview Ready": {
+//       label: "Interview Ready",
+//       color: "success", // Green
+//     },
+//   };
+
+//   return {
+//     label: statusMap[skillStatus]?.label || skillStatus,
+//     color: statusMap[skillStatus]?.color || "default",
+//     variant: "outlined",
+//     size: "small",
+//     sx: { fontWeight: "bold", mt: 1 },
+//   };
+// };
+
+// const SkillSets = () => {
+//   const { filteredData } = useGlobalFilters();
+//   const skillsInventoryData = filteredData.skillsInventry || [];
+//   const [fullscreen, setFullscreen] = useState(false);
+
+//   // Get user profile details
+//   // const userProfile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
+//   const userProfile = {
+//     displayName: "Test Executive",
+//     jobTitle: "COO", // Hardcoded executive role
+//   };
+//   const currentName = (userProfile.displayName || "").trim().toLowerCase();
+//   const userRole = (userProfile.jobTitle || "").trim();
+
+//   // Define role-based access
+//   const executiveRoles = ["COO", "CPTO", "Director of Cloud Innovation", "AI & Program Management"];
+
+//   const normalRoles = [
+//     "Associate Consultant",
+//     "Consultant",
+//     "Senior Consultant",
+//     "IDMC Consulting Manager",
+//     "Technical Lead",
+//     "Practice Lead",
+//   ];
+
+//   // Check user access level
+//   const isExecutive = executiveRoles.some((role) =>
+//     userRole.toLowerCase().includes(role.toLowerCase())
+//   );
+
+//   // Filter skills based on user role
+//   const certifications = skillsInventoryData
+//     .filter((skill) => {
+//       if (isExecutive) {
+//         return true; // Executives see all skills
+//       }
+//       return skill.Resource.toLowerCase() === currentName; // Others see only their skills
+//     })
+//     .map((skill) => ({
+//       title: skill.Skill,
+//       rating: `Rating - ${skill.SkillsPoints} / 10`,
+//       issued: new Date(skill.CreatedAt).toLocaleDateString(),
+//       status: skill.SkillStatus,
+//       resource: skill.Resource, // Added to show who owns the skill
+//       details: {
+//         monthsExperience: skill.TotalDurationinMonths,
+//         trainingCompleted: skill.TrainingCompleted ? "Yes" : "No",
+//         realProjectExperience: skill.RealProjectExperience ? "Yes" : "No",
+//         mockProjects: skill.MockProjectsShadowing ? "Yes" : "No",
+//         certified: skill.Certified ? "Yes" : "No",
+//         skillStatus: skill.SkillStatus,
+//       },
+//     }));
+
+//   const renderTooltipContent = (details) => (
+//     <Box sx={{ p: 1 }}>
+//       <Typography variant="subtitle2" gutterBottom>
+//         Skill Details
+//       </Typography>
+//       {isExecutive && <div>Resource: {details.resource}</div>}
+//       <div>Months Experience: {details.monthsExperience}</div>
+//       <div>Training Completed: {details.trainingCompleted}</div>
+//       <div>Real Project Experience: {details.realProjectExperience}</div>
+//       <div>Mock Projects: {details.mockProjects}</div>
+//       <div>Certified: {details.certified}</div>
+//     </Box>
+//   );
+
+//   const certificationContent = (
+//     <Grid container spacing={3}>
+//       {certifications.map((cert, index) => {
+//         const statusProps = getStatusStyle(cert.status);
+//         return (
+//           <Grid item xs={12} sm={6} md={4} key={index}>
+//             <Card
+//               elevation={4}
+//               sx={{
+//                 height: "100%",
+//                 display: "flex",
+//                 flexDirection: "column",
+//                 justifyContent: "space-between",
+//                 borderRadius: 3,
+//               }}
+//             >
+//               <CardContent sx={{ display: "flex", flexDirection: "column" }}>
+//                 <Typography variant="h6" fontWeight="bold" sx={{ color: "#2c3e50", mb: 1 }}>
+//                   {cert.title}
+//                 </Typography>
+
+//                 <Chip {...statusProps} />
+//                 <Typography variant="body2" color="text.secondary" mt={2}>
+//                   {cert.rating}
+//                 </Typography>
+//                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+//                   Last Evaluated: {cert.issued}
+//                 </Typography>
+//                 <Tooltip title={renderTooltipContent(cert.details)} arrow>
+//                   <Button variant="text" fullWidth sx={{ color: "secondary" }}>
+//                     View Details
+//                   </Button>
+//                 </Tooltip>
+//                 {isExecutive && (
+//                   <Typography variant="body2" color="text.secondary">
+//                     Owner: {cert.resource}
+//                   </Typography>
+//                 )}
+//               </CardContent>
+//             </Card>
+//           </Grid>
+//         );
+//       })}
+//     </Grid>
+//   );
+
+//   return (
+//     <Box
+//       sx={{
+//         position: fullscreen ? "fixed" : "relative",
+//         top: 0,
+//         left: 0,
+//         width: "100%",
+//         height: fullscreen ? "100vh" : "auto",
+//         bgcolor: fullscreen ? "#fff" : "transparent",
+//         zIndex: fullscreen ? 9999 : "auto",
+//         overflow: "auto",
+//         transition: "all 0.3s ease-in-out",
+//         p: fullscreen ? 2 : 3,
+//       }}
+//     >
+//       <Paper
+//         elevation={3}
+//         sx={{
+//           borderRadius: 2,
+//           p: 2,
+//           background: "linear-gradient(to right,rgb(8, 13, 17), #3498db)",
+//           mb: 3,
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "space-between",
+//         }}
+//       >
+//         <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
+//           👨🏽‍💻 Skills Inventory {isExecutive && "(Admin View)"}
+//         </Typography>
+//         <IconButton
+//           onClick={() => setFullscreen(!fullscreen)}
+//           color="inherit"
+//           sx={{ color: "white" }}
+//         >
+//           {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+//         </IconButton>
+//       </Paper>
+
+//       {certifications.length > 0 ? (
+//         certificationContent
+//       ) : (
+//         <Box
+//           sx={{
+//             display: "flex",
+//             justifyContent: "center",
+//             alignItems: "center",
+//             height: "200px",
+//             backgroundColor: "#f5f5f5",
+//             borderRadius: "16px",
+//           }}
+//         >
+//           <Typography variant="h6" color="textSecondary">
+//             {isExecutive
+//               ? "No skills found in the system"
+//               : `No skills found for ${currentName || "the current resource"}`}
+//           </Typography>
+//         </Box>
+//       )}
+//     </Box>
+//   );
+// };
+
+// export default SkillSets;
+
+// import React, { useState } from "react";
+// import {
+//   Card,
+//   CardContent,
+//   Typography,
+//   Grid,
+//   Button,
+//   Chip,
+//   Box,
+//   Paper,
+//   IconButton,
+//   Tooltip,
+//   TextField,
+//   Pagination,
+//   InputAdornment,
+// } from "@mui/material";
+// import {
+//   Fullscreen as FullscreenIcon,
+//   FullscreenExit as FullscreenExitIcon,
+//   Search as SearchIcon,
+// } from "@mui/icons-material";
+// import { useGlobalFilters } from "context/GlobalFilterContext";
+
+// const getStatusStyle = (skillStatus) => {
+//   const statusMap = {
+//     "Shadow Project": {
+//       label: "Shadow Project",
+//       color: "warning", // Yellow
+//     },
+//     "Training Needed": {
+//       label: "Training Needed",
+//       color: "error", // Red
+//     },
+//     "Interview Ready": {
+//       label: "Interview Ready",
+//       color: "success", // Green
+//     },
+//   };
+
+//   return {
+//     label: statusMap[skillStatus]?.label || skillStatus,
+//     color: statusMap[skillStatus]?.color || "default",
+//     variant: "outlined",
+//     size: "small",
+//     sx: { fontWeight: "bold", mt: 1 },
+//   };
+// };
+
+// const SkillSets = () => {
+//   const { filteredData } = useGlobalFilters();
+//   const skillsInventoryData = filteredData.skillsInventry || [];
+//   const [fullscreen, setFullscreen] = useState(false);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [page, setPage] = useState(1);
+//   const itemsPerPage = 9; // 3 columns x 3 rows
+
+//   // Get user profile details
+//   const userProfile = {
+//     displayName: "Test Executive",
+//     jobTitle: "COO", // Hardcoded executive role
+//   };
+//   const currentName = (userProfile.displayName || "").trim().toLowerCase();
+//   const userRole = (userProfile.jobTitle || "").trim();
+
+//   // Define role-based access
+//   const executiveRoles = ["COO", "CPTO", "Director of Cloud Innovation", "AI & Program Management"];
+
+//   // Check user access level
+//   const isExecutive = executiveRoles.some((role) =>
+//     userRole.toLowerCase().includes(role.toLowerCase())
+//   );
+
+//   // Filter skills based on user role and search term
+//   const filteredCertifications = skillsInventoryData
+//     .filter((skill) => {
+//       if (!isExecutive) {
+//         return skill.Resource.toLowerCase() === currentName;
+//       }
+//       return true;
+//     })
+//     .filter((skill) => {
+//       if (!searchTerm) return true;
+//       return skill.Resource.toLowerCase().includes(searchTerm.toLowerCase());
+//     })
+//     .map((skill) => ({
+//       title: skill.Skill,
+//       rating: `Rating - ${skill.SkillsPoints} / 10`,
+//       issued: new Date(skill.CreatedAt).toLocaleDateString(),
+//       status: skill.SkillStatus,
+//       resource: skill.Resource,
+//       details: {
+//         monthsExperience: skill.TotalDurationinMonths,
+//         trainingCompleted: skill.TrainingCompleted ? "Yes" : "No",
+//         realProjectExperience: skill.RealProjectExperience ? "Yes" : "No",
+//         mockProjects: skill.MockProjectsShadowing ? "Yes" : "No",
+//         certified: skill.Certified ? "Yes" : "No",
+//         skillStatus: skill.SkillStatus,
+//       },
+//     }));
+
+//   // Pagination logic
+//   const pageCount = Math.ceil(filteredCertifications.length / itemsPerPage);
+//   const paginatedCertifications = filteredCertifications.slice(
+//     (page - 1) * itemsPerPage,
+//     page * itemsPerPage
+//   );
+
+//   const renderTooltipContent = (details) => (
+//     <Box sx={{ p: 1 }}>
+//       <Typography variant="subtitle2" gutterBottom>
+//         Skill Details
+//       </Typography>
+//       {isExecutive && <div>Resource: {details.resource}</div>}
+//       <div>Months Experience: {details.monthsExperience}</div>
+//       <div>Training Completed: {details.trainingCompleted}</div>
+//       <div>Real Project Experience: {details.realProjectExperience}</div>
+//       <div>Mock Projects: {details.mockProjects}</div>
+//       <div>Certified: {details.certified}</div>
+//     </Box>
+//   );
+
+//   const handlePageChange = (event, value) => {
+//     setPage(value);
+//   };
+
+//   const handleSearchChange = (event) => {
+//     setSearchTerm(event.target.value);
+//     setPage(1); // Reset to first page when searching
+//   };
+
+//   const certificationContent = (
+//     <>
+//       {isExecutive && (
+//         <Box sx={{ mb: 3 }}>
+//           <TextField
+//             fullWidth
+//             variant="outlined"
+//             placeholder="Search by owner name..."
+//             value={searchTerm}
+//             onChange={handleSearchChange}
+//             InputProps={{
+//               startAdornment: (
+//                 <InputAdornment position="start">
+//                   <SearchIcon />
+//                 </InputAdornment>
+//               ),
+//             }}
+//           />
+//         </Box>
+//       )}
+
+//       <Grid container spacing={3}>
+//         {paginatedCertifications.map((cert, index) => {
+//           const statusProps = getStatusStyle(cert.status);
+//           return (
+//             <Grid item xs={12} sm={6} md={4} key={index}>
+//               <Card
+//                 elevation={4}
+//                 sx={{
+//                   height: "100%",
+//                   display: "flex",
+//                   flexDirection: "column",
+//                   justifyContent: "space-between",
+//                   borderRadius: 3,
+//                 }}
+//               >
+//                 <CardContent sx={{ display: "flex", flexDirection: "column" }}>
+//                   <Typography variant="h6" fontWeight="bold" sx={{ color: "#2c3e50", mb: 1 }}>
+//                     {cert.title}
+//                   </Typography>
+
+//                   <Chip {...statusProps} />
+//                   <Typography variant="body2" color="text.secondary" mt={2}>
+//                     {cert.rating}
+//                   </Typography>
+//                   <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+//                     Last Evaluated: {cert.issued}
+//                   </Typography>
+//                   {isExecutive && (
+//                     <Typography variant="body2" color="text.secondary">
+//                       Owner: {cert.resource}
+//                     </Typography>
+//                   )}
+//                   <Tooltip title={renderTooltipContent(cert.details)} arrow>
+//                     <Button variant="text" fullWidth sx={{ color: "secondary" }}>
+//                       View Details
+//                     </Button>
+//                   </Tooltip>
+//                 </CardContent>
+//               </Card>
+//             </Grid>
+//           );
+//         })}
+//       </Grid>
+
+//       {pageCount > 1 && (
+//         <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+//           <Pagination
+//             count={pageCount}
+//             page={page}
+//             onChange={handlePageChange}
+//             color="primary"
+//             showFirstButton
+//             showLastButton
+//           />
+//         </Box>
+//       )}
+//     </>
+//   );
+
+//   return (
+//     <Box
+//       sx={{
+//         position: fullscreen ? "fixed" : "relative",
+//         top: 0,
+//         left: 0,
+//         width: "100%",
+//         height: fullscreen ? "100vh" : "auto",
+//         bgcolor: fullscreen ? "#fff" : "transparent",
+//         zIndex: fullscreen ? 9999 : "auto",
+//         overflow: "auto",
+//         transition: "all 0.3s ease-in-out",
+//         p: fullscreen ? 2 : 3,
+//       }}
+//     >
+//       <Paper
+//         elevation={3}
+//         sx={{
+//           borderRadius: 2,
+//           p: 2,
+//           background: "linear-gradient(to right,rgb(8, 13, 17), #3498db)",
+//           mb: 3,
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "space-between",
+//         }}
+//       >
+//         <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
+//           👨🏽‍💻 Skills Inventory
+//           {/* {isExecutive && "(Admin View)"} */}
+//         </Typography>
+//         <IconButton
+//           onClick={() => setFullscreen(!fullscreen)}
+//           color="inherit"
+//           sx={{ color: "white" }}
+//         >
+//           {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+//         </IconButton>
+//       </Paper>
+
+//       {filteredCertifications.length > 0 ? (
+//         certificationContent
+//       ) : (
+//         <Box
+//           sx={{
+//             display: "flex",
+//             justifyContent: "center",
+//             alignItems: "center",
+//             height: "200px",
+//             backgroundColor: "#f5f5f5",
+//             borderRadius: "16px",
+//           }}
+//         >
+//           <Typography variant="h6" color="textSecondary">
+//             {isExecutive
+//               ? searchTerm
+//                 ? `No skills found for "${searchTerm}"`
+//                 : "No skills found in the system"
+//               : `No skills found for ${currentName || "the current resource"}`}
+//           </Typography>
+//         </Box>
+//       )}
+//     </Box>
+//   );
+// };
+
+// export default SkillSets;
+
 import React, { useState } from "react";
 import {
   Card,
@@ -897,10 +1603,19 @@ import {
   Paper,
   IconButton,
   Tooltip,
+  TextField,
+  Pagination,
+  InputAdornment,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import {
   Fullscreen as FullscreenIcon,
   FullscreenExit as FullscreenExitIcon,
+  Search as SearchIcon,
+  Clear as ClearIcon,
 } from "@mui/icons-material";
 import { useGlobalFilters } from "context/GlobalFilterContext";
 
@@ -933,21 +1648,55 @@ const SkillSets = () => {
   const { filteredData } = useGlobalFilters();
   const skillsInventoryData = filteredData.skillsInventry || [];
   const [fullscreen, setFullscreen] = useState(false);
-  const [currentName, setCurrentName] = useState(() => {
-    // For testing - hardcode the name
-    // return "Aravvindhan Shanmugaraj";
-    // Production code:
-    return (localStorage.getItem("currentName") || "").trim().toLowerCase();
-  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 9;
 
-  // Filter skills for current user and map to certification-like format
-  const certifications = skillsInventoryData
-    .filter((skill) => skill.Resource.toLowerCase() === currentName.toLowerCase())
+  // Get user profile details for testing purposes
+  // const userProfile = {
+  //   displayName: "Test Executive",
+  //   jobTitle: "COO", // Hardcoded executive role
+  // };
+  // original
+  const userProfile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
+  const currentName = (userProfile.displayName || "").trim().toLowerCase();
+  const userRole = (userProfile.jobTitle || "").trim();
+
+  // Define role-based access
+  const executiveRoles = ["COO", "CPTO", "Director of Cloud Innovation", "AI & Program Management"];
+
+  // Check user access level
+  const isExecutive = executiveRoles.some((role) =>
+    userRole.toLowerCase().includes(role.toLowerCase())
+  );
+
+  // Filter skills based on user role, search term, and status filter
+  const filteredCertifications = skillsInventoryData
+    .filter((skill) => {
+      if (!isExecutive) {
+        return skill.Resource.toLowerCase() === currentName;
+      }
+      return true;
+    })
+    .filter((skill) => {
+      if (!searchTerm && !statusFilter) return true;
+
+      const matchesSearch = searchTerm
+        ? skill.Resource.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          skill.Skill.toLowerCase().includes(searchTerm.toLowerCase())
+        : true;
+
+      const matchesStatus = statusFilter ? skill.SkillStatus === statusFilter : true;
+
+      return matchesSearch && matchesStatus;
+    })
     .map((skill) => ({
       title: skill.Skill,
       rating: `Rating - ${skill.SkillsPoints} / 10`,
       issued: new Date(skill.CreatedAt).toLocaleDateString(),
       status: skill.SkillStatus,
+      resource: skill.Resource,
       details: {
         monthsExperience: skill.TotalDurationinMonths,
         trainingCompleted: skill.TrainingCompleted ? "Yes" : "No",
@@ -958,12 +1707,39 @@ const SkillSets = () => {
       },
     }));
 
+  // Pagination logic
+  const pageCount = Math.ceil(filteredCertifications.length / itemsPerPage);
+  const paginatedCertifications = filteredCertifications.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
+  const handleResetFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("");
+    setPage(1);
+  };
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setPage(1);
+  };
+
+  const handleStatusFilterChange = (event) => {
+    setStatusFilter(event.target.value);
+    setPage(1);
+  };
+
   const renderTooltipContent = (details) => (
     <Box sx={{ p: 1 }}>
       <Typography variant="subtitle2" gutterBottom>
         Skill Details
       </Typography>
-      {/* <div>Status: {details.skillStatus}</div> */}
+      {isExecutive && <div>Resource: {details.resource}</div>}
       <div>Months Experience: {details.monthsExperience}</div>
       <div>Training Completed: {details.trainingCompleted}</div>
       <div>Real Project Experience: {details.realProjectExperience}</div>
@@ -973,44 +1749,167 @@ const SkillSets = () => {
   );
 
   const certificationContent = (
-    <Grid container spacing={3}>
-      {certifications.map((cert, index) => {
-        const statusProps = getStatusStyle(cert.status);
-        return (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card
-              elevation={4}
+    <>
+      {isExecutive && (
+        <Box
+          sx={{
+            mb: 3,
+            display: "flex",
+            alignItems: "flex-end", // Aligns items at the bottom
+            gap: 2,
+            "& .MuiFormControl-root": {
+              // Targets both TextField and Select
+              marginTop: 0, // Remove any top margin
+              marginBottom: 0, // Remove any bottom margin
+            },
+            "& .MuiInputBase-root": {
+              // Targets both input elements
+              height: "56px", // Match heights
+              display: "flex",
+              alignItems: "center", // Center content vertically
+            },
+            "& .MuiOutlinedInput-root": {
+              // Specific to outlined inputs
+              borderRadius: "4px", // Match border radius
+            },
+          }}
+        >
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Search by owner or skill..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            sx={{
+              flex: 2,
+              "& .MuiInputBase-input": {
+                // Input text styling
+                padding: "16.5px 14px", // Match Select padding
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start" sx={{ mr: 1 }}>
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearchTerm("")}>
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <FormControl sx={{ flex: 1, minWidth: 180 }}>
+            <InputLabel
               sx={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                borderRadius: 3,
+                transform: "translate(14px, 16px) scale(1)", // Match TextField label position
+                "&.Mui-focused": {
+                  transform: "translate(14px, -9px) scale(0.75)", // Match focused state
+                },
+                "&.MuiFormLabel-filled": {
+                  transform: "translate(14px, -9px) scale(0.75)", // Match filled state
+                },
               }}
             >
-              <CardContent sx={{ display: "flex", flexDirection: "column" }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ color: "#2c3e50", mb: 1 }}>
-                  {cert.title}
-                </Typography>
-                <Chip {...statusProps} />
+              Filter by Status
+            </InputLabel>
+            <Select
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+              label="Filter by Status"
+              sx={{
+                "& .MuiSelect-select": {
+                  // Match TextField input padding
+                  padding: "16.5px 14px",
+                },
+              }}
+            >
+              <MenuItem value="">All Statuses</MenuItem>
+              <MenuItem value="Interview Ready">Interview Ready</MenuItem>
+              <MenuItem value="Shadow Project">Shadow Project</MenuItem>
+              <MenuItem value="Training Needed">Training Needed</MenuItem>
+            </Select>
+          </FormControl>
 
-                <Typography variant="body2" color="text.secondary" mt={2}>
-                  {cert.rating}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
-                  Last Evaluated: {cert.issued}
-                </Typography>
-                <Tooltip title={renderTooltipContent(cert.details)} arrow>
-                  <Button variant="text" fullWidth sx={{ color: "secondary" }}>
-                    View Details
-                  </Button>
-                </Tooltip>
-              </CardContent>
-            </Card>
-          </Grid>
-        );
-      })}
-    </Grid>
+          {(searchTerm || statusFilter) && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleResetFilters}
+              startIcon={<ClearIcon />}
+              sx={{
+                height: "56px",
+                whiteSpace: "nowrap",
+                mb: 0, // Remove any bottom margin
+                px: 2, // Add horizontal padding
+              }}
+            >
+              Reset
+            </Button>
+          )}
+        </Box>
+      )}
+
+      <Grid container spacing={3}>
+        {paginatedCertifications.map((cert, index) => {
+          const statusProps = getStatusStyle(cert.status);
+          return (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card
+                elevation={4}
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  borderRadius: 3,
+                }}
+              >
+                <CardContent sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="h6" fontWeight="bold" sx={{ color: "#2c3e50", mb: 1 }}>
+                    {cert.title}
+                  </Typography>
+                  <Chip {...statusProps} />
+                  <Typography variant="body2" color="text.secondary" mt={2}>
+                    {cert.rating}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+                    Last Evaluated: {cert.issued}
+                  </Typography>
+                  {isExecutive && (
+                    <Typography variant="body2" color="text.secondary">
+                      Owner: {cert.resource}
+                    </Typography>
+                  )}
+                  <Tooltip title={renderTooltipContent(cert.details)} arrow>
+                    <Button variant="text" fullWidth sx={{ color: "secondary" }}>
+                      View Details
+                    </Button>
+                  </Tooltip>
+                </CardContent>
+              </Card>
+            </Grid>
+          );
+        })}
+      </Grid>
+
+      {pageCount > 1 && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Pagination
+            count={pageCount}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            showFirstButton
+            showLastButton
+          />
+        </Box>
+      )}
+    </>
   );
 
   return (
@@ -1042,6 +1941,7 @@ const SkillSets = () => {
       >
         <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
           👨🏽‍💻 Skills Inventory
+          {/* {isExecutive && "(Admin View)"} */}
         </Typography>
         <IconButton
           onClick={() => setFullscreen(!fullscreen)}
@@ -1052,22 +1952,38 @@ const SkillSets = () => {
         </IconButton>
       </Paper>
 
-      {certifications.length > 0 ? (
+      {filteredCertifications.length > 0 ? (
         certificationContent
       ) : (
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
             height: "200px",
             backgroundColor: "#f5f5f5",
             borderRadius: "16px",
+            gap: 2,
           }}
         >
           <Typography variant="h6" color="textSecondary">
-            No skills found for {currentName || "the current resource"}
+            {isExecutive
+              ? searchTerm || statusFilter
+                ? `No skills found matching your criteria`
+                : "No skills found in the system"
+              : `No skills found for ${currentName || "the current resource"}`}
           </Typography>
+          {(searchTerm || statusFilter) && (
+            <Button
+              variant="contained"
+              color="info"
+              onClick={handleResetFilters}
+              startIcon={<ClearIcon />}
+            >
+              Go Back
+            </Button>
+          )}
         </Box>
       )}
     </Box>

@@ -305,9 +305,11 @@ export const getUserProfile = async () => {
       throw new Error(`Failed to fetch user profile: ${profileResponse.status}`);
     }
     const profile = await profileResponse.json();
-    // console.log(profile?.displayName);
-    localStorage.setItem("currentName", profile?.displayName);
+
+    localStorage.setItem("userProfileDetails", JSON.stringify(profile));
+    // localStorage.setItem("currentName", profile?.displayName);
     // setloca storage using use effect
+    // localStorage.setItem("jobTitle", profile?.jobTitle);
 
     // Fetch profile photo
     let photoUrl = DEFAULT_PROFILE_IMAGE;
