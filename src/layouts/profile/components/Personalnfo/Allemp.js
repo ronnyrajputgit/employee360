@@ -8,7 +8,7 @@ const Allemp = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       const data = await getAllEmployees();
-      console.log(data);
+      // console.log(data);
       setEmployees(data);
       setLoading(false);
     };

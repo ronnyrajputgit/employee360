@@ -343,12 +343,13 @@ const EmployeeTasks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [createdByFilter, setCreatedByFilter] = useState("");
   const { filteredData, loading } = useGlobalFilters();
-  const userProfile = {
-    displayName: "Test Executive",
-    jobTitle: "COO", // Hardcoded executive role
-  };
+  // const userProfile = {
+  //   displayName: "Test Executive",
+  //   jobTitle: "COO", // Hardcoded executive role
+  // };
   // Get user profile and role
-  // const userProfile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
+  const userProfile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
+  console.log(userProfile);
   const userRole = (userProfile.jobTitle || "").trim();
 
   // Define executive roles

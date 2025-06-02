@@ -33,7 +33,7 @@ export const msalConfig = {
 };
 
 export const loginRequest = {
-  scopes: ["User.Read", "Sites.Read.All"],
+  // scopes: ["User.Read", "Sites.Read.All"],
   // to get the user's profile required admin permissions
-  // scopes: ["User.Read", "User.Read.All", "Sites.Read.All"],
+  scopes: ["User.Read", "User.Read.All", "Sites.Read.All"],
 };

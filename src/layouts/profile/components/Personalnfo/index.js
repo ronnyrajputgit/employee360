@@ -3,6 +3,7 @@ import { getUserProfile } from "auth/getUserProfile";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import React, { useEffect, useState } from "react";
+import Allemp from "./Allemp";
 
 const PersonalInfo = () => {
   const [user, setUser] = useState(null);
@@ -20,6 +21,7 @@ const PersonalInfo = () => {
   if (!user) return <center>Loading profile...</center>;
   return (
     <div>
+      <Allemp />
       <Grid container spacing={2}>
         {/* Profile Card */}
         <Grid item xs={12} md={6}>
