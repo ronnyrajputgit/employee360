@@ -12,6 +12,7 @@ import Profile from "layouts/profile";
 import Icon from "@mui/material/Icon";
 import ProjectOverview from "Pages/ProjectOverview/ProjectOverview";
 import WorkforceAnalytics from "Pages/WorkforceAnalytics/WorkforceAnalytics";
+import Employees from "Pages/Employees/Employees";
 
 const routes = [
   {
@@ -21,6 +22,14 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
+  },
+  {
+    type: "collapse",
+    name: "Employees",
+    key: "employee",
+    icon: <Icon fontSize="small">groups</Icon>,
+    route: "/employee",
+    component: <Employees />,
   },
   {
     type: "collapse",
