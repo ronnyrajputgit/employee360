@@ -337,27 +337,15 @@ import {
 } from "@mui/icons-material";
 import { useGlobalFilters } from "context/GlobalFilterContext";
 import DataTable from "examples/Tables/DataTable";
+import { useRoleBasedAccess } from "context/RoleBasedAccess";
 
 const EmployeeTasks = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [createdByFilter, setCreatedByFilter] = useState("");
   const { filteredData, loading } = useGlobalFilters();
-  // const userProfile = {
-  //   displayName: "Test Executive",
-  //   jobTitle: "COO", // Hardcoded executive role
-  // };
-  // Get user profile and role
-  const userProfile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
-  console.log(userProfile);
-  const userRole = (userProfile.jobTitle || "").trim();
 
-  // Define executive roles
-  const executiveRoles = ["COO", "CPTO", "Director of Cloud Innovation", "AI & Program Management"];
-
-  const isExecutive = executiveRoles.some((role) =>
-    userRole.toLowerCase().includes(role.toLowerCase())
-  );
+  const { isExecutive } = useRoleBasedAccess();
 
   // Get all unique creators for filter dropdown
   const allCreators = [
