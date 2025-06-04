@@ -14,7 +14,6 @@ export const UserRoleBasedProvider = ({ children }) => {
 
   const userRole = (userProfile.jobTitle || "").trim();
   // const userRole = "coo";
-
   // Executive logic (can be replaced with dynamic logic if needed)
   const executiveRoles = ["COO", "CPTO", "Director of Cloud Innovation", "AI & Program Management"];
 
