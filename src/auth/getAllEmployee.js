@@ -1,39 +1,3 @@
-// import { getAccessToken } from "./authProvider";
-
-// export const getAllEmployees = async () => {
-//   try {
-//     const token = await getAccessToken();
-
-//     const response = await fetch("https://graph.microsoft.com/v1.0/users", {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch users: ${response.status}`);
-//     }
-
-//     const data = await response.json();
-//     const users = data.value;
-
-//     // Optional: You can format users or add filters here
-//     return users.map((user) => ({
-//       id: user.id,
-//       name: user.displayName,
-//       email: user.mail || user.mail,
-//       jobTitle: user.jobTitle || "",
-//       department: user.department || "",
-//       officeLocation: user.officeLocation || "",
-//       mobilePhone: user.mobilePhone || "",
-//       preferredLanguage: user.preferredLanguage || "",
-//     }));
-//   } catch (error) {
-//     console.error("Error fetching employees:", error);
-//     return [];
-//   }
-// };
-
 import { getAccessToken } from "./authProvider";
 
 export const getAllEmployees = async () => {
@@ -77,7 +41,7 @@ export const getAllEmployees = async () => {
           }
           return user; // Return user without photo if photo fetch fails
         } catch (error) {
-          console.error(`Some pictures are not avaiables:`, error);
+          // console.error(`Some pictures are not avaiables:`, error);
           return user; // Return user without photo if there's an error
         }
       })
@@ -96,7 +60,7 @@ export const getAllEmployees = async () => {
       photoUrl: user.photoUrl || null, // Will be null if no photo available
     }));
   } catch (error) {
-    console.error("Error fetching employees:", error);
+    // console.error("Error fetching employees:", error);
     return [];
   }
 };
