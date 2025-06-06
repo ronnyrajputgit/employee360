@@ -29,6 +29,7 @@ const transformers = {
       createdBy: item.createdBy?.user?.displayName || "",
       CreatedDateTime: item.createdDateTime || "",
       Duration: item.fields?.Duration_x0028_inHrs_x0029_ || "",
+      Email: item.createdBy?.user?.email || "",
       photoUrl: `https://datainfasolpvtltd.sharepoint.com/sites/DataINFA360/_layouts/15/userphoto.aspx?size=S&username=${item.createdBy.user.email}`,
     })),
   projects: (raw) =>
