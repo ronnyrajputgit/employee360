@@ -52,7 +52,8 @@ export const UserRoleBasedProvider = ({ children }) => {
     userProfile = JSON.parse(localStorage.getItem("userProfileDetails") || "{}");
   }
 
-  const userRole = (userProfile.jobTitle || "").trim();
+  const userRole = "COO";
+  // const userRole = (userProfile.jobTitle || "").trim();
   const currentName = (userProfile.displayName || "").trim().toLowerCase();
 
   const executiveRoles = ["COO", "CPTO", "Director of Cloud Innovation", "AI & Program Management"];

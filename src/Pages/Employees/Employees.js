@@ -6,6 +6,7 @@ import React from "react";
 import EmployeeSkills from "./Components/SkillsInventory/EmployeeSkills";
 import EmployeeTasks from "./Components/Tasks/EmployeeTasks";
 import EmployeeProfiles from "./Components/EmployeeProfiles/EmployeeProfiles";
+import UtilizationMetrics from "./Components/UtilizationMetrics/UtilizationMetrics";
 
 const Employees = () => {
   return (
@@ -20,6 +21,9 @@ const Employees = () => {
         </MDBox>
         <MDBox mt={4} mb={3}>
           <EmployeeTasks />
+        </MDBox>
+        <MDBox mt={4} mb={3}>
+          <UtilizationMetrics />
         </MDBox>
         {/* <MDBox py={3}>
           <Grid container spacing={3}>
