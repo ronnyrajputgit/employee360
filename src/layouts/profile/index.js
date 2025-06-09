@@ -57,9 +57,9 @@ function Overview() {
           {/* certification details */}
           <TaskCompleted />
           <SkillSets />
+          <UtilizationMetrics />
           <CertificationCards />
           <Achievement />
-          <UtilizationMetrics />
           <Compliments />
           <AttendanceInfo />
           <HierarchyInfo />

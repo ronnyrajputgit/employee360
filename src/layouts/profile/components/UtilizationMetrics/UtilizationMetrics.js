@@ -1,5 +1,15 @@
-import React, { useState, useMemo } from "react";
-import { Card, CardContent, Typography, Box, Grid, Stack, IconButton } from "@mui/material";
+import React, { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Grid,
+  Stack,
+  IconButton,
+  useMediaQuery,
+} from "@mui/material";
 import PieChartIcon from "@mui/icons-material/PieChart";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
@@ -54,7 +64,6 @@ const PERIOD_OPTIONS = ["Yearly", "Quarterly", "Monthly", "Weekly"];
 const CHART_COLORS = { billable: "#2196f3", nonBillable: "#9e9e9e" };
 
 // Helper to get the descriptive label for a given date and period.
-// This label will serve as the key for aggregation and also for chart display.
 const getFormattedPeriodLabel = (dateString, period) => {
   const date = dayjs(dateString);
   if (!date.isValid()) {
@@ -62,21 +71,18 @@ const getFormattedPeriodLabel = (dateString, period) => {
     return "Invalid Date";
   }
 
-  const currentYear = dayjs().year(); // Get current year for default quarter labels
+  const currentYear = dayjs().year();
 
   switch (period) {
     case "Yearly":
-      // Example: "Quarter 1 (Jan - Mar)" for the year of the task
       const year = date.year();
       const quarterNum = date.quarter();
       const startMonth = dayjs().year(year).quarter(quarterNum).startOf("quarter").format("MMM");
       const endMonth = dayjs().year(year).quarter(quarterNum).endOf("quarter").format("MMM");
       return `Quarter ${quarterNum} (${startMonth} - ${endMonth})`;
     case "Quarterly":
-      // Example: "June"
       return date.format("MMMM");
     case "Monthly":
-      // Example: "Week 1 (Jun 1-7)"
       const startOfMonth = date.startOf("month");
       const dayOfMonth = date.date();
       const weekNumber = Math.ceil(dayOfMonth / 7);
@@ -89,20 +95,16 @@ const getFormattedPeriodLabel = (dateString, period) => {
           : weekEndDate.format("MMM D");
       return `Week ${weekNumber} (${formattedStartDate}-${formattedEndDate})`;
     case "Weekly":
-      // Example: "Monday", "Tuesday"
-      return date.format("dddd"); // 'dddd' for full day name (Sunday, Monday)
+      return date.format("dddd");
     default:
       return "";
   }
 };
 
-// Helper to get comprehensive labels for the chart based on the selected period.
-// These are the *expected* labels for a given period, regardless of data presence.
 const getExpectedLabelsForPeriod = (period) => {
   const currentMoment = dayjs();
   switch (period) {
     case "Yearly":
-      // Labels for all 4 quarters of the current year with full names
       return Array.from({ length: 4 }, (_, i) => {
         const quarterNum = i + 1;
         const startMonth = dayjs().quarter(quarterNum).startOf("quarter").format("MMM");
@@ -110,7 +112,6 @@ const getExpectedLabelsForPeriod = (period) => {
         return `Quarter ${quarterNum} (${startMonth} - ${endMonth})`;
       });
     case "Quarterly":
-      // Labels for all 12 months
       return Array.from({ length: 12 }, (_, i) => currentMoment.month(i).format("MMMM"));
     case "Monthly":
       const monthStart = currentMoment.startOf("month");
@@ -118,7 +119,6 @@ const getExpectedLabelsForPeriod = (period) => {
       const labels = [];
       let currentWeekStart = monthStart;
 
-      // Generate labels for all weeks in the current month
       while (currentWeekStart.isBefore(monthEnd) || currentWeekStart.isSame(monthEnd, "day")) {
         const weekNumber = Math.ceil(currentWeekStart.date() / 7);
         const weekEndDate = currentWeekStart.add(6, "day");
@@ -132,11 +132,9 @@ const getExpectedLabelsForPeriod = (period) => {
       }
       return labels;
     case "Weekly":
-      // Dynamically generate full day names, excluding Saturday (6) and Sunday (0)
-      // dayjs().day(0) is Sunday, dayjs().day(1) is Monday, etc.
       return Array.from({ length: 7 }, (_, i) => dayjs().day(i).format("dddd")).filter(
         (dayName, index) => index !== 0 && index !== 6
-      ); // Exclude Sunday (index 0) and Saturday (index 6)
+      );
     default:
       return [];
   }
@@ -150,18 +148,15 @@ const aggregateTaskData = (tasks, period) => {
   tasks.forEach((task) => {
     const date = dayjs(task.CreatedDateTime);
 
-    // Skip task if date is invalid
     if (!date.isValid()) {
       console.warn("Skipping task due to invalid CreatedDateTime:", task.CreatedDateTime);
       return;
     }
 
-    // Exclude tasks created on Saturday (6) and Sunday (0) for Weekly view only
     if (period === "Weekly" && (date.day() === 0 || date.day() === 6)) {
-      return; // Skip this task for weekly aggregation
+      return;
     }
 
-    // Use the descriptive label as the key for aggregation
     const key = getFormattedPeriodLabel(task.CreatedDateTime, period);
     const duration = Number(task.Duration) || 0;
     const isBillable = task.ProjectType === "Customer";
@@ -176,14 +171,9 @@ const aggregateTaskData = (tasks, period) => {
     }
   });
 
-  // Get the complete set of labels expected for the current period
   const expectedLabels = getExpectedLabelsForPeriod(period);
-
-  // Filter `expectedLabels` to only include those for which we have aggregated data,
-  // or if there's no data at all, use all expected labels to show an empty chart.
   let finalLabels = expectedLabels;
   if (tasks.length > 0) {
-    // Only filter if there are actual tasks to consider
     const labelsWithData = expectedLabels.filter((label) => result[label]);
     if (labelsWithData.length > 0) {
       finalLabels = labelsWithData;
@@ -199,23 +189,32 @@ const aggregateTaskData = (tasks, period) => {
   };
 };
 
-// --- Main Component ---
 const UtilizationMetrics = () => {
+  const [searchParams] = useSearchParams();
   const [fullscreen, setFullscreen] = useState(false);
-  const [period, setPeriod] = useState("Monthly"); // Default to Monthly
+  const [period, setPeriod] = useState("Monthly");
   const { filteredData } = useGlobalFilters();
-  const { currentName } = useRoleBasedAccess();
+  const { currentName, isExecutive } = useRoleBasedAccess();
+  const [viewingEmployeeEmail, setViewingEmployeeEmail] = useState(null);
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
-  // Memoize filtered tasks to avoid re-filtering on every render
-  const relevantTasks = useMemo(
-    () =>
-      (filteredData.tasks || []).filter((task) =>
-        task.createdBy?.toLowerCase().includes(currentName?.toLowerCase() || "")
-      ),
-    [filteredData, currentName]
-  );
+  useEffect(() => {
+    const emailParam = searchParams.get("email");
+    if (emailParam && isExecutive) {
+      setViewingEmployeeEmail(emailParam);
+    } else {
+      setViewingEmployeeEmail(null);
+    }
+  }, [searchParams, isExecutive]);
 
-  // Memoize aggregated data based on relevant tasks and selected period
+  const relevantTasks = useMemo(() => {
+    const filterByName = viewingEmployeeEmail
+      ? (task) => task.Email?.toLowerCase() === viewingEmployeeEmail.toLowerCase()
+      : (task) => task.createdBy?.toLowerCase() === currentName?.toLowerCase();
+
+    return (filteredData.tasks || []).filter(filterByName);
+  }, [filteredData, currentName, viewingEmployeeEmail]);
+
   const { labels, billableData, nonBillableData, totalBillable, totalNonBillable } = useMemo(
     () => aggregateTaskData(relevantTasks, period),
     [relevantTasks, period]
@@ -225,7 +224,6 @@ const UtilizationMetrics = () => {
   const calculatePercentage = (value) =>
     totalOverallHours ? Math.round((value / totalOverallHours) * 100) : 0;
 
-  // Chart data derived from aggregated data
   const chartData = {
     labels,
     datasets: [
@@ -244,14 +242,11 @@ const UtilizationMetrics = () => {
     ],
   };
 
-  // Stats data derived from aggregated data
   const stats = [
     { label: "Total Billable Hours", value: totalBillable },
     { label: "Total Non-Billable Hours", value: totalNonBillable },
     { label: "Billable %", value: `${calculatePercentage(totalBillable)}%` },
     { label: "Non-Billable %", value: `${calculatePercentage(totalNonBillable)}%` },
-    // { label: "Target", value: "75%" }, // Example static value, can be dynamic
-    // { label: "Department Average", value: "72%" }, // Example static value, can be dynamic
   ];
 
   return (
@@ -271,7 +266,6 @@ const UtilizationMetrics = () => {
         flexDirection: "column",
       }}
     >
-      {/* Header */}
       <Box
         sx={{
           background: "linear-gradient(to right, rgb(78, 105, 138), #1e88e5)",
@@ -286,7 +280,7 @@ const UtilizationMetrics = () => {
         <Stack direction="row" alignItems="center" spacing={1}>
           <PieChartIcon />
           <Typography variant="h6" fontWeight="bold" fontSize={{ xs: "1rem", sm: "1.25rem" }}>
-            Utilization Metrics
+            {viewingEmployeeEmail ? `${viewingEmployeeEmail}'s Utilization` : "Utilization Metrics"}
           </Typography>
         </Stack>
         <IconButton
@@ -298,7 +292,6 @@ const UtilizationMetrics = () => {
         </IconButton>
       </Box>
 
-      {/* Period Selection Buttons */}
       <Grid container spacing={1} p={2} mt={0}>
         {PERIOD_OPTIONS.map((opt) => (
           <Grid item xs={6} sm={3} key={opt}>
@@ -328,12 +321,13 @@ const UtilizationMetrics = () => {
             <Bar data={chartData} options={CHART_OPTIONS} />
           ) : (
             <Typography variant="subtitle1" textAlign="center" mt={5}>
-              No data available for the selected period.
+              {viewingEmployeeEmail
+                ? `No utilization data available for ${viewingEmployeeEmail}`
+                : "No utilization data available for the selected period."}
             </Typography>
           )}
         </Box>
 
-        {/* Stats */}
         <Grid container spacing={2} mt={2}>
           {stats.map(({ label, value }, i) => (
             <Grid item xs={12} sm={6} md={3} key={i}>
