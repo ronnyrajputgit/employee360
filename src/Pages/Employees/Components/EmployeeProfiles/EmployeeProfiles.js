@@ -593,7 +593,7 @@ const EmployeeProfiles = () => {
                         Status:
                       </MDTypography>
                       <MDTypography variant="body2" fontWeight="medium" color="success">
-                        Active
+                        {currentEmployee.status || "N/A"}
                       </MDTypography>
                     </Grid>
                   </Grid>

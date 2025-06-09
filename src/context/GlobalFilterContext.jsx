@@ -51,7 +51,6 @@ const transformers = {
   // add new transformers here
   skillsInventry: (raw) =>
     raw.map((item) => ({
-      // ...item.fields,
       EmployeeId: item.fields?.Title || "",
       Resource: item.fields?.Resource || "",
       TotalDurationinMonths: item.fields?.TotalDurationinMonths || "",
@@ -66,6 +65,7 @@ const transformers = {
       MockProjectsShadowing: item.fields?.MockProjects_x002f_Shadowing || "",
       CreatedAt: item.fields?.Created || "",
       CreatedBy: item.createdBy?.user?.displayName || "",
+      Email: item.createdBy?.user?.email || "",
     })),
 };
 
