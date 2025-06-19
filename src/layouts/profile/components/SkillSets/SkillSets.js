@@ -459,7 +459,7 @@ const SkillSets = () => {
   const [viewingEmployeeEmail, setViewingEmployeeEmail] = useState(null);
   const { currentName, isExecutive } = useRoleBasedAccess();
   const [searchParams] = useSearchParams();
-  console.log(skillsInventoryData);
+  // console.log(skillsInventoryData);
   useEffect(() => {
     // Check if there's an email query parameter (from executive viewing a profile)
     const emailParam = searchParams.get("email");

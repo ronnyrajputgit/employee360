@@ -238,74 +238,248 @@
 //   }
 // };
 
+// import { fetchEmployeeListData } from "apis/sharepointApi";
+// import { getAccessToken } from "./authProvider";
+
+// // Default fallback profile image
+// const DEFAULT_PROFILE_IMAGE = "/default-profile.png";
+
+// const employeeData1 = await fetchEmployeeListData();
+// const employeeFieldsOnly = employeeData1.map((item) => item.fields);
+
+// console.log("Fields Only", employeeFieldsOnly);
+// // Static employee dataset
+// const employeeData = [
+//   {
+//     givenName: "Krishna",
+//     name: "Krishna Kumar",
+//     employeeId: "00064",
+//     department: "Consulting Services",
+//     joiningDate: "22 Jan 2024",
+//     location: "Bengaluru",
+//     status: "Active",
+//   },
+//   {
+//     givenName: "Ankit",
+//     name: "Ankit Sharma",
+//     employeeId: "00012",
+//     department: "IT Support",
+//     joiningDate: "10 Mar 2022",
+//     location: "Delhi",
+//     status: "Active",
+//   },
+//   {
+//     givenName: "Ganapathysundaram",
+//     name: "Ganapathysundaram Venkatramanathan",
+//     employeeId: "00027",
+//     department: "HR",
+//     joiningDate: "05 Sep 2023",
+//     location: "Mumbai",
+//     status: "Inactive",
+//   },
+//   {
+//     givenName: "Rahul",
+//     name: "Rahul Verma",
+//     employeeId: "00033",
+//     department: "Finance",
+//     joiningDate: "01 Jan 2021",
+//     location: "Chennai",
+//     status: "Active",
+//   },
+//   {
+//     givenName: "Sneha",
+//     name: "Sneha Iyer",
+//     employeeId: "00045",
+//     department: "Marketing",
+//     joiningDate: "14 Feb 2022",
+//     location: "Pune",
+//     status: "Active",
+//   },
+// ];
+
+// export const getUserProfile = async () => {
+//   try {
+//     const token = await getAccessToken();
+//     // Fetch Microsoft user profile
+//     const profileResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+//     if (!profileResponse.ok) {
+//       throw new Error(`Failed to fetch user profile: ${profileResponse.status}`);
+//     }
+//     const profile = await profileResponse.json();
+//     localStorage.setItem("userProfileDetails", JSON.stringify(profile));
+//     // Fetch profile photo
+//     let photoUrl = DEFAULT_PROFILE_IMAGE;
+//     try {
+//       const photoResponse = await fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+//       if (photoResponse.ok) {
+//         const photoBlob = await photoResponse.blob();
+//         photoUrl = URL.createObjectURL(photoBlob);
+//       }
+//     } catch {
+//       console.warn("Profile photo not found. Using default.");
+//     }
+
+//     // Find matching employee from static data
+//     const match = employeeData.find(
+//       (emp) =>
+//         emp.name.toLowerCase() === profile.displayName.toLowerCase() ||
+//         emp.givenName.toLowerCase() === (profile.givenName || "").toLowerCase()
+//     );
+
+//     const matchedAdditionalData = match
+//       ? {
+//           employeeId: match.employeeId,
+//           department: match.department,
+//           joiningDate: match.joiningDate,
+//           location: match.location,
+//           status: match.status,
+//         }
+//       : {};
+
+//     // Return merged object
+//     return {
+//       name: profile.displayName,
+//       givenName: profile.givenName || "",
+//       email: profile.mail || profile.userPrincipalName,
+//       jobTitle: profile.jobTitle || "N/A",
+//       phone: profile.mobilePhone || "N/A",
+//       photo: photoUrl,
+//       ...matchedAdditionalData,
+//     };
+//   } catch (error) {
+//     console.error("Error fetching user profile:", error);
+//     return null;
+//   }
+// };
+
+// import { fetchEmployeeListData } from "apis/sharepointApi";
+// import { getAccessToken } from "./authProvider";
+
+// // Default fallback profile image
+// const DEFAULT_PROFILE_IMAGE = "/default-profile.png";
+
+// // Fetch employee data from API
+// const employeeData1 = await fetchEmployeeListData();
+
+// // Map over the fetched data to extract fields
+// const employeeFieldsOnly = employeeData1.map((item) => item.fields);
+
+// export const getUserProfile = async () => {
+//   try {
+//     const token = await getAccessToken();
+
+//     // Fetch Microsoft user profile
+//     const profileResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     if (!profileResponse.ok) {
+//       throw new Error(`Failed to fetch user profile: ${profileResponse.status}`);
+//     }
+
+//     const profile = await profileResponse.json();
+//     localStorage.setItem("userProfileDetails", JSON.stringify(profile));
+
+//     // Fetch profile photo
+//     let photoUrl = DEFAULT_PROFILE_IMAGE;
+//     try {
+//       const photoResponse = await fetch("https://graph.microsoft.com/v1.0/me/photo/$value", {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+//       if (photoResponse.ok) {
+//         const photoBlob = await photoResponse.blob();
+//         photoUrl = URL.createObjectURL(photoBlob);
+//       }
+//     } catch {
+//       console.warn("Profile photo not found. Using default.");
+//     }
+
+//     // Find matching employee from the API data
+//     const match = employeeFieldsOnly.find(
+//       (emp) =>
+//         emp.Title.toLowerCase() === profile.displayName.toLowerCase() ||
+//         emp.field_1.toLowerCase() === (profile.givenName || "").toLowerCase()
+//     );
+
+//     // If a match is found, merge the data with the API fields dynamically
+//     const matchedAdditionalData = match
+//       ? {
+//           employeeId: match.field_1, // Employee ID
+//           department: match.field_11, // Department
+//           // joiningDate: match.field_6, // Date of Joining
+//           joiningDate: new Date(match.field_6).toLocaleDateString("en-GB").replaceAll("/", "-"), // Date of Joining
+//           location: match.field_13, // Location
+//           EmployeeMentType: match.field_15, // Employee Status
+//           // status: match.field_15, // Employee Status
+//           currentAddress: match.CurrentAddress, // Current Address
+//           permanentAddress: match.PermanentAddress, // Permanent Address
+//           email: match.field_8, // Personal Email
+//           officialEmail: match.field_9, // Official Email
+//           phone: match.field_10, // Phone Number
+//           reportingManager: match.field_14, // Reporting Manager
+//           maritalStatus: match.field_25, // Marital Status
+//           bloodGroup: match.field_27, // Blood Group
+//         }
+//       : {};
+
+//     // Return merged object with dynamic fields
+//     return {
+//       name: profile.displayName,
+//       givenName: profile.givenName || "",
+//       email: profile.mail || profile.userPrincipalName,
+//       jobTitle: profile.jobTitle || "N/A",
+//       // phone: profile.mobilePhone || "N/A",
+//       photo: photoUrl,
+//       ...matchedAdditionalData,
+//     };
+//   } catch (error) {
+//     console.error("Error fetching user profile:", error);
+//     return null;
+//   }
+// };
+
+import { fetchEmployeeListData } from "apis/sharepointApi";
 import { getAccessToken } from "./authProvider";
 
 // Default fallback profile image
 const DEFAULT_PROFILE_IMAGE = "/default-profile.png";
 
-// Static employee dataset
-const employeeData = [
-  {
-    givenName: "Krishna",
-    name: "Krishna Kumar",
-    employeeId: "00064",
-    department: "Consulting Services",
-    joiningDate: "22 Jan 2024",
-    location: "Bengaluru",
-    status: "Active",
-  },
-  {
-    givenName: "Ankit",
-    name: "Ankit Sharma",
-    employeeId: "00012",
-    department: "IT Support",
-    joiningDate: "10 Mar 2022",
-    location: "Delhi",
-    status: "Active",
-  },
-  {
-    givenName: "Ganapathysundaram",
-    name: "Ganapathysundaram Venkatramanathan",
-    employeeId: "00027",
-    department: "HR",
-    joiningDate: "05 Sep 2023",
-    location: "Mumbai",
-    status: "Inactive",
-  },
-  {
-    givenName: "Rahul",
-    name: "Rahul Verma",
-    employeeId: "00033",
-    department: "Finance",
-    joiningDate: "01 Jan 2021",
-    location: "Chennai",
-    status: "Active",
-  },
-  {
-    givenName: "Sneha",
-    name: "Sneha Iyer",
-    employeeId: "00045",
-    department: "Marketing",
-    joiningDate: "14 Feb 2022",
-    location: "Pune",
-    status: "Active",
-  },
-];
+// Fetch employee data from API
+const employeeData1 = await fetchEmployeeListData();
+
+// Map over the fetched data to extract fields
+const employeeFieldsOnly = employeeData1.map((item) => item.fields);
 
 export const getUserProfile = async () => {
   try {
     const token = await getAccessToken();
+
     // Fetch Microsoft user profile
     const profileResponse = await fetch("https://graph.microsoft.com/v1.0/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
     if (!profileResponse.ok) {
       throw new Error(`Failed to fetch user profile: ${profileResponse.status}`);
     }
+
     const profile = await profileResponse.json();
     localStorage.setItem("userProfileDetails", JSON.stringify(profile));
+
     // Fetch profile photo
     let photoUrl = DEFAULT_PROFILE_IMAGE;
     try {
@@ -322,32 +496,46 @@ export const getUserProfile = async () => {
       console.warn("Profile photo not found. Using default.");
     }
 
-    // Find matching employee from static data
-    const match = employeeData.find(
-      (emp) =>
-        emp.name.toLowerCase() === profile.displayName.toLowerCase() ||
-        emp.givenName.toLowerCase() === (profile.givenName || "").toLowerCase()
+    // Find matching employee from the API data
+    const match = employeeFieldsOnly.find(
+      (emp) => emp.Title.toLowerCase() === profile.displayName.toLowerCase()
     );
 
-    const matchedAdditionalData = match
-      ? {
-          employeeId: match.employeeId,
-          department: match.department,
-          joiningDate: match.joiningDate,
-          location: match.location,
-          status: match.status,
-        }
-      : {};
-
-    // Return merged object
+    // Return merged object with dynamic fields and profile data directly
     return {
       name: profile.displayName,
       givenName: profile.givenName || "",
       email: profile.mail || profile.userPrincipalName,
       jobTitle: profile.jobTitle || "N/A",
-      phone: profile.mobilePhone || "N/A",
       photo: photoUrl,
-      ...matchedAdditionalData,
+      employeeId: match?.field_1 || "N/A", // Employee ID
+      Department: match?.field_11 || "N/A", // Department
+      joiningDate: match?.field_6
+        ? new Date(match.field_6).toLocaleDateString("en-GB").replaceAll("/", "-")
+        : "N/A", // Date of Joining
+      DateOfBirth: match?.field_5
+        ? new Date(match.field_5).toLocaleDateString("en-GB").replaceAll("/", "-")
+        : "N/A",
+      CreatedOn: match?.Created
+        ? new Date(match.Created).toLocaleDateString("en-GB").replaceAll("/", "-")
+        : "N/A",
+      YearsOfExperienceInDatainfa: match?.field_4 || "N/A",
+      location: match?.field_13 || "N/A", // Location
+      CurrentAddress: match.CurrentAddress.replace(/<[^>]+>/g, "").trim(),
+      PermanentAddress: match?.PermanentAddress.replace(/<[^>]+>/g, "").trim() || "N/A", // Permanent Address
+      personalEmail: match?.field_8 || "N/A", // Personal Email
+      OfficialEmail: match?.field_9 || "N/A", // Official Email
+      phone: match?.field_10 || "N/A", // Phone Number
+      reportingManager: match?.field_14 || "N/A", // Reporting Manager
+      maritalStatus: match?.field_25 || "N/A", // Marital Status
+      bloodGroup: match?.field_27 || "N/A", // Blood Group
+      YearsOfxperience: match?.field_3 || "N/A",
+      Designation: match?.field_12 || "N/A",
+      PersonalEmailId: match?.field_8 || "N/A",
+      Gender: match?.field_24 || "N/A",
+      EmployeeMentType: match?.field_15 || "N/A",
+      EmergencyContact: match?.field_16 || "N/A",
+      MaritalStatus: match?.field_25 || "N/A",
     };
   } catch (error) {
     console.error("Error fetching user profile:", error);

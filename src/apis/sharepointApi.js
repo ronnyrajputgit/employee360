@@ -65,6 +65,11 @@ export const fetchSkillInventoryData = async () => {
   ]);
 };
 
+// fetch Employee List Data
+export const fetchEmployeeListData = async () => {
+  return await fetchAllSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "EmployeeInformation");
+};
+
 // export const listAllListsFromSite = async () => {
 //   const siteUrl = SHAREPOINT_SITES.DATAINFA360;
 //   const endpoint = `/sites/${siteUrl}/lists`;
