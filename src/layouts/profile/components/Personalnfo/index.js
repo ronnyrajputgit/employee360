@@ -339,9 +339,7 @@ const DEFAULT_PROFILE_IMAGE = "/default-profile.png";
 const PersonalInfo = () => {
   const [displayedUser, setDisplayedUser] = useState(null); // This will be the profile displayed
   const [loading, setLoading] = useState(true);
-  const [isFullscreen, setIsFullscreen] = useState(false); // State for fullscreen toggle
   const [openModal, setOpenModal] = useState(false); // State to manage modal visibility
-
   const location = useLocation(); // Hook to access the URL's query parameters
   const { isExecutive } = useRoleBasedAccess(); // Get executive role status
 
@@ -668,10 +666,10 @@ const PersonalInfo = () => {
             </Grid>
             <Grid item xs={3}>
               <MDTypography variant="caption" color="text">
-                Marital Status:
+                Date Of Exit:
               </MDTypography>
               <MDTypography variant="body2" fontWeight="medium">
-                {displayedUser.maritalStatus || "N/A"}
+                {displayedUser.DateOfExit || "N/A"}
               </MDTypography>
             </Grid>
             <Grid item xs={3}>
