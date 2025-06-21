@@ -4,7 +4,6 @@ export const getAccessToken = async () => {
   try {
     // Wait for MSAL to initialize
     await msalInstance.initialize();
-
     const accounts = msalInstance.getAllAccounts();
     let account = accounts[0];
 
