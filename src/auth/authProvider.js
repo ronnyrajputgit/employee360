@@ -1,6 +1,5 @@
 import { msalInstance } from "./msalInstance";
 import { loginRequest } from "./authConfig";
-
 export const getAccessToken = async () => {
   try {
     // Wait for MSAL to initialize
