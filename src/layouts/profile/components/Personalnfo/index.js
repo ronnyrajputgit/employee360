@@ -500,18 +500,18 @@ const PersonalInfo = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <MDTypography variant="caption" color="text">
-                    Department:
+                    Project Assignment:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
-                    {displayedUser.Department || "N/A"}
+                    {displayedUser.ProjectAssigmnet || "N/A"}
                   </MDTypography>
                 </Grid>
                 <Grid item xs={6}>
                   <MDTypography variant="caption" color="text">
-                    Joining Date:
+                    Reporting Manager:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
-                    {displayedUser.joiningDate || "N/A"}
+                    {displayedUser.reportingManager || "N/A"}
                   </MDTypography>
                 </Grid>
                 <Grid item xs={6}>
@@ -524,7 +524,7 @@ const PersonalInfo = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <MDTypography variant="caption" color="text">
-                    Phone:
+                    Mobile Number:
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium">
                     {"+91" + " " + displayedUser.phone || "N/A"}
@@ -536,6 +536,22 @@ const PersonalInfo = () => {
                   </MDTypography>
                   <MDTypography variant="body2" fontWeight="medium" color="success">
                     {displayedUser.bloodGroup || "N/A"}
+                  </MDTypography>
+                </Grid>
+                <Grid item xs={6}>
+                  <MDTypography variant="caption" color="text">
+                    Years of Experience:
+                  </MDTypography>
+                  <MDTypography variant="body2" fontWeight="medium">
+                    {displayedUser.YearsOfxperience || "N/A"}
+                  </MDTypography>
+                </Grid>
+                <Grid item xs={6}>
+                  <MDTypography variant="caption" color="text">
+                    Experience at DataInfa:
+                  </MDTypography>
+                  <MDTypography variant="body2" fontWeight="medium">
+                    {displayedUser.YearsOfExperienceInDatainfa || "N/A"}
                   </MDTypography>
                 </Grid>
               </Grid>
@@ -712,29 +728,39 @@ const PersonalInfo = () => {
                 {displayedUser.MaritalStatus || "N/A"}
               </MDTypography>
             </Grid>
-            <Grid item xs={3}>
+            {/* <Grid item xs={3}>
               <MDTypography variant="caption" color="text">
                 Created On:
               </MDTypography>
               <MDTypography variant="body2" fontWeight="medium">
                 {displayedUser.CreatedOn || "N/A"}
               </MDTypography>
-            </Grid>
-            <Grid item xs={6}>
-              <MDTypography variant="caption" color="text">
-                Current Address:
-              </MDTypography>
-              <MDTypography variant="body2" fontWeight="medium">
-                {displayedUser.CurrentAddress || "N/A"}
-              </MDTypography>
-            </Grid>
-            <Grid item xs={6}>
-              <MDTypography variant="caption" color="text">
-                Permanent Address:
-              </MDTypography>
-              <MDTypography variant="body2" fontWeight="medium">
-                {displayedUser.PermanentAddress || "N/A"}
-              </MDTypography>
+            </Grid> */}
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Grid item xs={6}>
+                <MDTypography variant="caption" color="text">
+                  Current Address:
+                </MDTypography>
+                <MDTypography variant="body2" fontWeight="medium">
+                  {displayedUser.CurrentAddress || "N/A"}
+                </MDTypography>
+              </Grid>
+              <Grid item xs={6}>
+                <MDTypography variant="caption" color="text">
+                  Permanent Address:
+                </MDTypography>
+                <MDTypography variant="body2" fontWeight="medium">
+                  {displayedUser.PermanentAddress || "N/A"}
+                </MDTypography>
+              </Grid>
             </Grid>
           </Grid>
         </DialogContent>
