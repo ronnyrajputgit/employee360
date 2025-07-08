@@ -58,11 +58,11 @@ function Overview() {
           <TaskCompleted />
           <SkillSets />
           <UtilizationMetrics />
-          <CertificationCards />
-          <Achievement />
-          <Compliments />
-          <AttendanceInfo />
-          <HierarchyInfo />
+          {/* <CertificationCards /> */}
+          {/* <Achievement /> */}
+          {/* <Compliments /> */}
+          {/* <AttendanceInfo /> */}
+          {/* <HierarchyInfo /> */}
         </MDBox>
       </Header>
       <Footer />

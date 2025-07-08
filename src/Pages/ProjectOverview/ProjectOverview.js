@@ -1148,17 +1148,17 @@ function ProjectOverview() {
       icon: <PieChart />,
       component: <ResourcesUtilizations />,
     },
-    milestones: {
-      title: "Major Milestones",
-      icon: <EmojiFlags />,
-      component: <Majormilestone />,
-    },
-    timeline: {
-      title: "Project Timeline",
-      icon: <CalendarMonth />,
-      component: <ProjectTimeline />,
-      showChips: true, // for Month/Week/Day chips
-    },
+    // milestones: {
+    //   title: "Major Milestones",
+    //   icon: <EmojiFlags />,
+    //   component: <Majormilestone />,
+    // },
+    // timeline: {
+    //   title: "Project Timeline",
+    //   icon: <CalendarMonth />,
+    //   component: <ProjectTimeline />,
+    //   showChips: true, // for Month/Week/Day chips
+    // },
   };
 
   const handleToggleFullscreen = (section) => {

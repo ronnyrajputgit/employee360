@@ -361,14 +361,14 @@ export const useRoutes = () => {
         route: "/projectoverview",
         component: <ProjectOverview />,
       },
-      {
-        type: "collapse",
-        name: "Workforce Analytics",
-        key: "workforce analytics",
-        icon: <Icon fontSize="small">work</Icon>,
-        route: "/workforceanalytics",
-        component: <WorkforceAnalytics />,
-      },
+      // {
+      //   type: "collapse",
+      //   name: "Workforce Analytics",
+      //   key: "workforce analytics",
+      //   icon: <Icon fontSize="small">work</Icon>,
+      //   route: "/workforceanalytics",
+      //   component: <WorkforceAnalytics />,
+      // },
       // {
       //   type: "collapse",
       //   name: "Billing",
