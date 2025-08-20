@@ -44,6 +44,7 @@ import AttendanceInfo from "./components/AttendanceInfo/AttendanceInfo";
 import HierarchyInfo from "./components/HierarchyInfo/HierarchyInfo";
 import TaskCompleted from "./components/TaskCompleted/TaskCompleted";
 import SharePointData from "Pages/ProjectOverview/SharePointData";
+import WorkTrackers from "./components/WorkTrackers/WorkTrackers";
 
 function Overview() {
   return (
@@ -54,9 +55,11 @@ function Overview() {
         <MDBox mt={5} mb={3}>
           {/* <SharePointData /> */}
           <PersonalInfo />
+          <WorkTrackers />
+          <SkillSets />
           {/* certification details */}
           <TaskCompleted />
-          <SkillSets />
+
           <UtilizationMetrics />
           {/* <CertificationCards /> */}
           {/* <Achievement /> */}

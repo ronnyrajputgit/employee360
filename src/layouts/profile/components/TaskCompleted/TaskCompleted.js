@@ -206,7 +206,6 @@ const TasksCompleted = () => {
   const { currentName, isExecutive } = useRoleBasedAccess();
   const [searchParams] = useSearchParams();
   const [viewingEmployeeEmail, setViewingEmployeeEmail] = useState(null);
-
   // 1. Add a new state to hold the tasks that should be displayed on the screen.
   const [displayedTasks, setDisplayedTasks] = useState([]);
 

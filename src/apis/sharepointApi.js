@@ -1,5 +1,3 @@
-//
-
 import axios from "./axiosInstance";
 
 // Common SharePoint sites
@@ -70,15 +68,11 @@ export const fetchEmployeeListData = async () => {
   return await fetchAllSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "EmployeeInformation");
 };
 
-// export const listAllListsFromSite = async () => {
-//   const siteUrl = SHAREPOINT_SITES.DATAINFA360;
-//   const endpoint = `/sites/${siteUrl}/lists`;
-
-//   const response = await axios.get(endpoint);
-//   console.log("All SharePoint Lists:", response.data.value);
-
-//   return response.data.value;
-// };
-
-// https://datainfasolpvtltd.sharepoint.com/sites/DataINFA360/Lists/Skills%20Inventory/AllItems.aspx
-// https://datainfasolpvtltd.sharepoint.com/sites/DataINFA360/Lists/Tasks/AllItems.aspx
+export const fetchWorkTrackerData = async () => {
+  return await fetchAllSharePointListItems(SHAREPOINT_SITES.DATAINFA360, "WorkTracker", [
+    "Project",
+    "Category",
+    "RelatedIssue",
+    "Assignedto0",
+  ]);
+};

@@ -1,10 +1,20 @@
 // combined
+// to add the new api add the new api in apiMap and transformer and filterKeyMap followe the steps
+// 1. add the new api in apiMap
+// 2. add the new transformer in transformers
+// 3. add the new filter keys in filterKeyMap
+// 4. add the new filter keys in filterOptions
+// 5. add the new filter keys in filters
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { taskBreakdownProfilleData, fetchTaskListsData } from "apis/sharepointApi";
 import { getAccessToken } from "auth/authProvider";
-import { fetchSkillInventoryData } from "apis/sharepointApi";
+import {
+  taskBreakdownProfilleData,
+  fetchTaskListsData,
+  fetchSkillInventoryData,
+  fetchWorkTrackerData,
+} from "apis/sharepointApi";
 
 const GlobalFilterContext = createContext();
 
@@ -14,6 +24,7 @@ const apiMap = {
   projects: fetchTaskListsData,
   // add new apis here
   skillsInventry: fetchSkillInventoryData,
+  WorkTracker: fetchWorkTrackerData,
 };
 
 // Transformers
@@ -67,6 +78,26 @@ const transformers = {
       CreatedBy: item.createdBy?.user?.displayName || "",
       Email: item.createdBy?.user?.email || "",
     })),
+
+  WorkTracker: (raw) =>
+    raw.map((item) => ({
+      id: item.id,
+      CreatedBy: item.createdBy?.user?.displayName || "",
+      Email: item.createdBy?.user?.email || "",
+      CreatedAt: item.fields?.Created || "",
+      Issue: item.fields?.Title || "",
+      Priority: item.fields?.Priority || "",
+      Status: item.fields?.Status || "",
+      AssignedTo: item.fields?.Assignedto0 || "",
+      AssignedDate: item.fields?.AssignedDate || "",
+      DueDate: item.fields?.DueDate || "",
+      Project: item.fields?.Project || "",
+      Category: item.fields?.Category || "",
+      ParentRelatedIssues: item.fields?.RelatedIssue || "",
+      sharepointViewUrl: `https://datainfasolpvtltd.sharepoint.com/sites/DataINFA360/Lists/WorkTracker/DispForm.aspx?ID=${item.id}`,
+
+      // ...item.fields,
+    })),
 };
 
 // Unified filter key mapping for both datasets
@@ -86,6 +117,9 @@ const filterKeyMap = {
   },
   // add new filter keys here
   skillsInventry: {
+    createdBy: "CreatedBy",
+  },
+  WorkTracker: {
     createdBy: "CreatedBy",
   },
 };
