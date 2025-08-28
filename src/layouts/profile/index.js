@@ -59,7 +59,6 @@ function Overview() {
           <SkillSets />
           {/* certification details */}
           <TaskCompleted />
-
           <UtilizationMetrics />
           {/* <CertificationCards /> */}
           {/* <Achievement /> */}
