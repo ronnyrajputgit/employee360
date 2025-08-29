@@ -121,6 +121,7 @@ const filterKeyMap = {
   },
   WorkTracker: {
     createdBy: "CreatedBy",
+    projectName: "Project",
   },
 };
 

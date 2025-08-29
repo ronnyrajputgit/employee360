@@ -160,7 +160,14 @@
 
 import React, { useState } from "react";
 import { Grid, Box, Card, IconButton } from "@mui/material";
-import { Checklist, Fullscreen, FullscreenExit, PieChart, Task } from "@mui/icons-material";
+import {
+  Checklist,
+  Fullscreen,
+  FullscreenExit,
+  Person3,
+  PieChart,
+  Task,
+} from "@mui/icons-material";
 
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -179,6 +186,16 @@ function ProjectOverview() {
 
   // <-- Badlav yahan hai: Component को स्टोर करें, JSX एलिमेंट को नहीं -->
   const sectionMap = {
+    assignedTask: {
+      title: "Assigned Tasks",
+      icon: <Task />,
+      Component: AssignedTasks, // <-- <Taskbreakdown /> की जगह सिर्फ Taskbreakdown
+    },
+    projectMember: {
+      title: "Project Members",
+      icon: <Person3 />,
+      Component: Projectsongoing, // <-- <Taskbreakdown /> की जगह सिर्फ Taskbreakdown
+    },
     taskBreakdown: {
       title: "Task Breakdown by Resources",
       icon: <Checklist />,
@@ -188,11 +205,6 @@ function ProjectOverview() {
       title: "Resource Utilization",
       icon: <PieChart />,
       Component: ResourcesUtilizations, // <-- Component का नाम रखें
-    },
-    assignedTask: {
-      title: "Assigned Tasks",
-      icon: <Task />,
-      Component: AssignedTasks, // <-- <Taskbreakdown /> की जगह सिर्फ Taskbreakdown
     },
   };
 
@@ -257,9 +269,6 @@ function ProjectOverview() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mt={4} mb={3}>
-        <Projectsongoing />
-      </MDBox>
       <MDBox py={3}>
         <Grid container spacing={3}>
           {Object.entries(sectionMap).map(([key, { title, icon, Component }]) => (
